@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政策通知 - 起步区数字统一门户</title>
+    <style>
+        /* 复用全局基础样式（和其他页面一致） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #005ea5;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #004a87;
+        }
+
+        .btn-secondary {
+            background-color: #f0f2f5;
+            color: #333;
+            border: 1px solid #dcdfe6;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e8eaed;
+        }
+
+        /* 小程序二维码样式（复用） */
+        .mini-program {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .mini-program-trigger {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .mini-program-trigger:hover {
+            background-color: #004a87;
+            transform: scale(1.05);
+        }
+
+        .mini-program-content {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            display: none;
+            width: 180px;
+            text-align: center;
+        }
+
+        .mini-program:hover .mini-program-content {
+            display: block;
+        }
+
+        .mini-program-qrcode {
+            width: 150px;
+            height: 150px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .mini-program-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* 顶部导航（复用，政策通知页面标记为active） */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        /* 全局搜索样式 */
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #005ea5;
+            box-shadow: 0 0 0 2px rgba(0, 94, 165, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #005ea5;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #004a87;
+        }
+
+        /* 智能问答机器人样式 */
+        .ai-chatbot {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 9999;
+        }
+
+        .chatbot-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 94, 165, 0.3);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .chatbot-toggle:hover {
+            background-color: #004a87;
+            transform: scale(1.1);
+        }
+
+        .chatbot-panel {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            width: 320px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: none;
+        }
+
+        .chatbot-panel.show {
+            display: block;
+        }
+
+        .chatbot-header {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chatbot-close {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+
+        .chat-message.bot {
+            justify-content: flex-start;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+
+        .bot .message-content {
+            background-color: #f0f7ff;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user .message-content {
+            background-color: #005ea5;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chatbot-input-area {
+            border-top: 1px solid #f0f2f5;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chatbot-send {
+            background-color: #005ea5;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chatbot-send:hover {
+            background-color: #004a87;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #005ea5;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            color: #005ea5;
+        }
+
+        .header-nav {
+            padding: 0;
+        }
+
+        .nav-list {
+            display: flex;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-item:hover {
+            color: #005ea5;
+        }
+
+        .nav-item.active {
+            color: #005ea5;
+            border-bottom: 3px solid #005ea5;
+        }
+
+        /* 页面标题区（复用） */
+        .page-header {
+            background-color: #e6f4ff;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #005ea5;
+            margin-bottom: 10px;
+        }
+
+        .page-desc {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* 通用区块样式（复用+扩展） */
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #005ea5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #005ea5;
+            font-size: 20px;
+        }
+
+        /* 政策文件和AI解读布局 */
+        .policy-layout {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* 左侧政策文件列表 */
+        .policy-list {
+            width: 300px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            flex-shrink: 0;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+
+        .policy-list-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #005ea5;
+        }
+
+        .policy-item {
+            padding: 12px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+            border-left: 3px solid transparent;
+        }
+
+        .policy-item:hover {
+            background-color: #f0f7ff;
+            padding-left: 15px;
+        }
+
+        .policy-item.active {
+            background-color: #e6f4ff;
+            border-left: 3px solid #005ea5;
+            color: #005ea5;
+            font-weight: 500;
+        }
+
+        .policy-item-title {
+            font-size: 14px;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .policy-item-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 右侧AI政策解读内容 */
+        .ai-interpretation {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+
+        .interpretation-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .interpretation-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .interpretation-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .interpretation-content {
+            line-height: 1.8;
+            color: #333;
+            font-size: 15px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .interpretation-content::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .interpretation-content::-webkit-scrollbar-track {
+            background: #f0f2f5;
+            border-radius: 3px;
+        }
+
+        .interpretation-content::-webkit-scrollbar-thumb {
+            background: #c0cdd8;
+            border-radius: 3px;
+        }
+
+        .interpretation-content::-webkit-scrollbar-thumb:hover {
+            background: #005ea5;
+        }
+
+        .interpretation-content p {
+            margin-bottom: 15px;
+        }
+
+        .interpretation-content strong {
+            color: #005ea5;
+            font-weight: 600;
+        }
+
+        .ai-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #e6f4ff;
+            color: #005ea5;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        /* 通知公告列表样式 */
+        .notice-list {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+
+        .notice-item {
+            display: flex;
+            padding: 18px 0;
+            border-bottom: 1px solid #f0f2f5;
+            transition: all 0.3s;
+        }
+
+        .notice-item:last-child {
+            border-bottom: none;
+        }
+
+        .notice-item:hover {
+            background-color: #fafbfc;
+        }
+
+        .notice-date {
+            width: 80px;
+            flex-shrink: 0;
+            text-align: center;
+            padding-top: 5px;
+        }
+
+        .notice-date-day {
+            font-size: 24px;
+            font-weight: 600;
+            color: #005ea5;
+            line-height: 1;
+        }
+
+        .notice-date-month {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .notice-content {
+            flex: 1;
+            padding-left: 20px;
+        }
+
+        .notice-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .notice-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .tag-urgent {
+            background-color: #fef0f0;
+            color: #f53f3f;
+            border: 1px solid #ffccc7;
+        }
+
+        .tag-normal {
+            background-color: #f0f9ff;
+            color: #0086d1;
+            border: 1px solid #b3e0ff;
+        }
+
+        .tag-important {
+            background-color: #fdf2f8;
+            color: #c41d7f;
+            border: 1px solid #ffbae0;
+        }
+
+        .notice-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .notice-ops {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        /* 底部样式（复用） */
+        .footer {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-col h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-col ul {
+            font-size: 13px;
+        }
+
+        .footer-col li {
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .footer-col li:hover {
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 0;
+            }
+
+            .nav-list {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .nav-item {
+                padding: 10px 15px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .page-desc {
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            /* 政策布局响应式 */
+            .policy-layout {
+                flex-direction: column;
+            }
+
+            .policy-list {
+                width: 100%;
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .ai-interpretation, .notice-list {
+                padding: 20px;
+            }
+
+            .interpretation-title {
+                font-size: 18px;
+            }
+
+            /* 通知公告响应式 */
+            .notice-item {
+                flex-direction: column;
+            }
+
+            .notice-date {
+                width: 100%;
+                text-align: left;
+                margin-bottom: 10px;
+                padding-top: 0;
+            }
+
+            .notice-content {
+                padding-left: 0;
+            }
+
+            .mini-program {
+                display: none;
+            }
+        }
+    </style>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 小程序二维码入口（复用） -->
+    <div class="mini-program">
+        <div class="mini-program-trigger">
+            <i class="fa fa-qrcode"></i>
+        </div>
+        <div class="mini-program-content">
+            <div class="mini-program-qrcode">
+                <div>
+                    <i class="fa fa-qrcode" style="font-size: 40px; margin-bottom: 10px;"></i>
+                    <p>起步区接诉即办</p>
+                    <p>小程序二维码</p>
+                </div>
+            </div>
+            <div class="mini-program-name">起步区接诉即办</div>
+        </div>
+    </div>
+
+    <!-- 顶部导航（政策通知页面标记为active） -->
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMwMDVlYTVjIi8+CjxwYXRoIGQ9Ik0yMCAxMFYzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTEwIDIwSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=" alt="政务平台logo">
+                    <div class="logo-text">起步区数字统一门户</div>
+                </div>
+                <!-- 全局搜索 -->
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索政策、系统、服务...">
+                    <button class="search-btn"><i class="fa fa-search"></i></button>
+                </div>
+                <div class="user-area">
+                    <div class="user-info">
+                        <div class="user-avatar"><i class="fa fa-user"></i></div>
+                        <span>政务管理员</span>
+                    </div>
+                    <div class="logout-btn" id="logout-btn"><i class="fa fa-sign-out-alt"></i> 退出登录</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="./统一办公2.html">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./ai办公.html">AI办公</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./政务办公.html">政务办公</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./数字大脑.html">数字大脑</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="./政策通知.html">政策通知</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./办公助手.html">办公助手</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题区 -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">政策通知</h1>
+            <p class="page-desc">集中展示最新政策文件、AI政策解读及各类通知公告，助力政务工作开展</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- 第一部分：政策文件和AI政策解读 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-file-alt"></i>
+                政策文件
+            </h2>
+
+            <div class="policy-layout">
+                <!-- 左侧政策文件列表 -->
+                <div class="policy-list">
+                    <div class="policy-list-title">最新政策文件</div>
+                    <div class="policy-items">
+                        <div class="policy-item active" data-policy="digital-city">
+                            <div class="policy-item-title">济南市低空经济发展促进办法</div>
+                            <div class="policy-item-date">2026-01-01</div>
+                        </div>
+                        <div class="policy-item" data-policy="gov-service">
+                            <div class="policy-item-title">济南市法治乡村建设办法</div>
+                            <div class="policy-item-date">2025-12-24</div>
+                        </div>
+                        <div class="policy-item" data-policy="finance">
+                            <div class="policy-item-title">济南市消防安全管理规定</div>
+                            <div class="policy-item-date">2025-12-03</div>
+                        </div>
+                        <div class="policy-item" data-policy="social-governance" style="display: none;">
+                            <div class="policy-item-title">基层社会治理现代化指导意见</div>
+                            <div class="policy-item-date">2024-12-20</div>
+                        </div>
+                        <div class="policy-item" data-policy="industry" style="display: none;">
+                            <div class="policy-item-title">重点产业扶持政策实施办法</div>
+                            <div class="policy-item-date">2024-12-15</div>
+                        </div>
+                        <div class="policy-item" data-policy="construction" style="display: none;">
+                            <div class="policy-item-title">城市建设管理标准化规范</div>
+                            <div class="policy-item-date">2024-12-10</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧AI政策解读内容 -->
+                <div class="ai-interpretation">
+                    <!-- 数字城市建设规划解读（默认显示） -->
+                    <div class="interpretation-content-wrap active" id="digital-city">
+                        <div class="interpretation-header">
+                            <h3 class="interpretation-title">济南市低空经济发展促进办法
+                                <!-- <span class="ai-tag">AI智能解读</span> -->
+                            </h3>
+                            <div class="interpretation-meta">
+                                <div><i class="fa fa-calendar"></i> 发布时间：2026-01-01</div>
+                                <div><i class="fa fa-user"></i> 发布单位：济南市人民政府</div>
+                                <div><i class="fa fa-eye"></i> 施行时间：2026-03-01</div>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-content">
+                            <p style="text-align:center; color:#666; font-size:13px;">（2026年1月1日济南市人民政府令第302号公布，自2026年3月1日起施行）</p>
+
+                            <p><strong>第一章　总　则</strong></p>
+                            <p><strong>第一条</strong>　为了推动低空经济产业体系建设，促进低空经济安全健康发展，加快培育新质生产力，根据《中华人民共和国民用航空法》、《无人驾驶航空器飞行管理暂行条例》等法律、法规，结合本市实际，制定本办法。</p>
+                            <p><strong>第二条</strong>　本市行政区域内促进低空经济发展的相关活动，适用本办法。法律、法规、规章另有规定的，从其规定。<br>本办法所称低空经济，是指以民用无人驾驶航空器和有人驾驶航空器的低空飞行活动为牵引，辐射带动航空器研发、生产、销售以及低空飞行活动相关的基础设施建设运营、飞行保障、衍生综合服务等领域融合发展的综合经济形态。</p>
+                            <p><strong>第三条</strong>　低空经济发展应当坚持中国共产党的领导，坚持总体国家安全观，坚持安全第一、政府引导、市场主导、协同推进和应用牵引、创新驱动、包容审慎的原则。</p>
+                            <p><strong>第四条</strong>　发展和改革部门负责统筹和指导低空经济发展工作，制定低空经济发展相关政策措施，推动将低空经济发展纳入国民经济和社会发展规划。财政部门负责统筹各类财政性资金，为促进低空经济发展提供必要的资金支持。城乡交通运输部门负责统筹开展低空交通物流应用场景培育，推动低空出行和物流行业发展；做好地面交通、水上交通和空中交通衔接，协调推进飞行服务保障等工作。应急管理部门负责指导协调低空飞行突发事件应急救援工作，建立应急协调联动救援机制。气象部门负责制定低空气象基础设施建设布局方案，提供低空气象监测、预报服务。公安机关负责会同有关部门依法处置从事低空飞行活动时发生的违反飞行管理规定、扰乱公共秩序或者危害公共安全等违法行为。</p>
+                            <p><strong>第五条</strong>　区县人民政府应当加强对低空经济发展工作的统筹领导，结合本辖区实际，推进低空经济多元化、差异化、特色化发展。</p>
+                            <p><strong>第六条</strong>　市人民政府有关部门应当主动争取国家和省级政策支持，推动在低空空域改革、低空飞行服务保障、低空经济产业融合发展、低空运营市场推广等方面先行先试。</p>
+                            <p><strong>第七条</strong>　本市建立低空经济专家论证咨询机制，为促进低空经济发展工作提供研究、论证、咨询等服务。</p>
+                            <p><strong>第八条</strong>　鼓励、支持依法成立低空经济相关行业协会、商会、产业联盟等组织，加强行业自律，提供政策宣传、信息共享、技术交流、业务培训等服务。</p>
+
+                            <p><strong>第二章　基础设施</strong></p>
+                            <p><strong>第九条</strong>　低空基础设施建设的规划、运营应当结合土地、环境、气象等条件，综合考虑经济、安全、人口密度、飞行需求、可持续发展等因素。</p>
+                            <p><strong>第十条</strong>　市发展和改革部门会同相关部门编制本市低空基础设施建设规划，报市人民政府批准后实施，坚持绿色发展、节约集约、共建共享的原则。</p>
+                            <p><strong>第十一条</strong>　本市统筹推动建设、运营低空基础设施：（一）推动低空飞行起降、中转、货物装卸、乘客候乘、航空器充（换）电、飞行测试、维修保养等物理基础设施建设；（二）推动低空飞行通信、导航、监视、气象监测等信息基础设施建设；（三）推动通信网络对低空空域的覆盖，推广使用低空飞行专用频率。</p>
+                            <p><strong>第十二条</strong>　公安机关、应急管理部门根据实际需要，可以设立用于警务活动和应急救援的临时起降场所。</p>
+                            <p><strong>第十三条</strong>　鼓励在符合要求的医院、学校、体育场、城市核心商务区、高层建筑、交通枢纽站点、A级旅游景区等区域，依法布设低空基础设施。</p>
+                            <p><strong>第十四条</strong>　低空飞行基础设施建设、运营单位应当按照相关技术规范和标准，定期开展维护保养，保障安全、稳定、高效运行。</p>
+
+                            <p><strong>第三章　产业发展</strong></p>
+                            <p><strong>第十五条</strong>　市发展和改革部门编制本市低空经济发展规划，区县人民政府及其有关部门应当推动低空经济重大项目建设和产业集聚发展，培育壮大产业集群。</p>
+                            <p><strong>第十六条</strong>　本市统筹规范低空经济产业园区规划建设，完善基础设施和综合服务，推动低空经济特色产业集聚发展。</p>
+                            <p><strong>第十七条</strong>　鼓励企业、高等学校、科研机构等在本市开展低空经济全产业链创新活动，推动科技成果落地转化。</p>
+                            <p><strong>第十八条</strong>　鼓励、支持金融机构提供定制化金融产品和服务，加大对低空经济企业和产业项目的信贷支持力度；引导多层次产业基金加大对低空经济关键技术研发、基础设施建设等领域重大项目的投资力度。</p>
+                            <p><strong>第十九条</strong>　支持引进低空经济高层次人才和团队，建立和完善人才引进、评价与激励机制；鼓励高等学校和科研机构开放共享科教资源，培育综合性、专业性、技能型人才。</p>
+                            <p><strong>第二十条</strong>　鼓励加大低空经济技术研发投入，推动形成具有自主知识产权的产品和服务，加强知识产权保护，鼓励知识产权交易。</p>
+                            <p><strong>第二十一条</strong>　支持低空经济领域相关标准体系建设，鼓励参与制定国际标准、国家标准、行业标准和地方标准。</p>
+                            <p><strong>第二十二条</strong>　推动建设民用无人驾驶航空器试验基地，提供内场性能测试、外场飞行测试、航空器运行风险评估、试飞试验和有人无人融合飞行验证综合性服务。</p>
+
+                            <p><strong>第四章　应用推广</strong></p>
+                            <p><strong>第二十三条</strong>　有关部门应当制定相关政策措施，培育市场需求，推动低空飞行在生产作业、公共服务、交通物流、低空消费等方面的创新应用。鼓励社会组织、企业事业单位和个人在保障安全的前提下，探索低空飞行在各领域的应用。</p>
+                            <p><strong>第二十四条</strong>　市城乡交通运输部门会同有关部门有序推进城市空中交通管理试点工作，逐步开通市内和城际等低空客运航线，探索发展交通联程接驳、空中通勤、商务出行等低空出行新业态。</p>
+                            <p><strong>第二十五条</strong>　统筹低空物流发展，推动无人驾驶航空器在快递、即时配送等物流配送服务领域的应用。</p>
+                            <p><strong>第二十六条</strong>　推动低空文化园区、低空消费小镇、低空飞行营地等建设，鼓励开展航拍航摄、飞行培训、低空赛事、低空运动、低空旅游、低空会展、低空飞行表演、低空文化交流等活动。</p>
+                            <p><strong>第二十七条</strong>　农业农村部门应当推动低空飞行在农业监测、生产管理、病虫害防治等活动中的应用。</p>
+                            <p><strong>第二十八条</strong>　推动低空飞行在应急救援、医疗救护、消防救援等场景应用；推动建立医疗检验中心与医院之间的空中运输通道，探索对血液样本、检测样本等快速转运。</p>
+                            <p><strong>第二十九条</strong>　推动低空飞行在自然资源调查和测绘、生态环境保护、警务活动、交通疏导、气象监测、城市管理、能源管线巡检、河流巡查和防洪、森林巡查和防火等方面的应用。</p>
+
+                            <p><strong>第五章　飞行服务</strong></p>
+                            <p><strong>第三十条</strong>　市发展和改革部门会同市城乡交通运输部门组织建设市低空飞行管理服务平台，推动与省级主管部门低空智能网联系统对接，为低空飞行提供飞行计划协助申报、航空情报、通信感知、监视告警、气象信息、应急处置信息等服务。</p>
+                            <p><strong>第三十一条</strong>　市低空飞行管理服务平台应当结合低空经济发展需要和飞行活动需求，推进低空智能网联系统升级迭代，提升低空管理服务数字化、智能化水平。</p>
+                            <p><strong>第三十二条</strong>　本市根据低空经济发展需求，在省人民政府统筹安排下，商请相关部门推进低空空域和航线分类划设等工作，相关信息通过市低空飞行管理服务平台向社会公布。</p>
+                            <p><strong>第三十三条</strong>　低空飞行用户依法需要提出飞行计划申报的，应当按照法律、法规的规定向有权部门提出；可以通过市低空飞行管理服务平台提出飞行活动申请，平台获知审批结果后应当及时向申请用户反馈。</p>
+
+                            <p><strong>第六章　安全保障</strong></p>
+                            <p><strong>第三十四条</strong>　从事低空飞行活动，应当遵守国家和省空域管理、飞行管理等法律、法规、规章的有关规定，遵守空中运行秩序，确保安全。</p>
+                            <p><strong>第三十五条</strong>　航空器产品应当符合国家有关强制性标准；需要取得适航许可的，应当向民用航空管理部门申请适航许可。从事航空器生产、维修、改装、运营和开展飞行培训等活动应当按照国家有关规定取得相关资质。从事经营性低空飞行活动应当依法取得相应的经营许可证、运营合格证。</p>
+                            <p><strong>第三十六条</strong>　航空器及其权利人应当依法进行登记；无人驾驶航空器生产、登记、使用等信息，应当按照国家有关规定接入国家无人驾驶航空器一体化综合监管服务平台。</p>
+                            <p><strong>第三十七条</strong>　低空基础设施管理部门协同相关部门做好基础设施安全监管，低空基础设施的建设、运营单位依法承担安全主体责任。</p>
+                            <p><strong>第三十八条</strong>　承担低空飞行管理服务的部门应当按照国家有关规定制定低空飞行应急预案并组织演练，应急预案应当定期更新，并纳入全市应急管理体系。</p>
+
+                            <p><strong>第七章　附　则</strong></p>
+                            <p><strong>第三十九条</strong>　济南高新技术产业开发区管理委员会、济南市南部山区管理委员会、济南新旧动能转换起步区管理委员会在各自管理区域内开展促进低空经济发展工作，按照职责权限执行本办法。</p>
+                            <p><strong>第四十条</strong>　本办法自2026年3月1日起施行。</p>
+                        </div>
+                    </div>
+
+                    <!-- 政务服务提质增效实施细则解读 -->
+                    <div class="interpretation-content-wrap" id="gov-service" style="display: none;">
+                        <div class="interpretation-header">
+                            <h3 class="interpretation-title">济南市法治乡村建设办法
+                                <!-- <span class="ai-tag">AI智能解读</span> -->
+                            </h3>
+                            <div class="interpretation-meta">
+                                <div><i class="fa fa-calendar"></i> 发布时间：2025-12-24</div>
+                                <div><i class="fa fa-user"></i> 发布单位：济南市人民政府</div>
+                                <div><i class="fa fa-eye"></i> 施行时间：2026-02-01</div>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-content">
+                            <p style="text-align:center; color:#666; font-size:13px;">（2025年12月24日济南市人民政府令第301号公布，自2026年2月1日起施行）</p>
+
+                            <p><strong>第一条</strong>　为了促进法治乡村建设，服务和保障乡村振兴战略，推进乡村治理体系和治理能力现代化，根据《中华人民共和国村民委员会组织法》《中华人民共和国乡村振兴促进法》等有关法律、法规，结合本市实际，制定本办法。</p>
+                            <p><strong>第二条</strong>　本市行政区域内法治乡村建设及其相关活动，适用本办法。<br>本办法所称法治乡村建设，是指健全乡村治理制度、改进治理方式、完善公共法律服务、提高执法规范化水平、提升公民法治素养等相关活动。</p>
+                            <p><strong>第三条</strong>　法治乡村建设应当坚持中国共产党的领导，坚持以人民为中心，坚持法治与自治、德治相结合，坚持政府负责、社会协同、公众参与、因地制宜的原则。</p>
+                            <p><strong>第四条</strong>　市、区县司法行政部门负责法治乡村建设工作的协调、指导、督促和检查。公安、自然资源和规划、农业农村、卫生健康、生态环境、住房和城乡建设等部门依照各自职责，做好法治乡村建设有关工作。</p>
+                            <p><strong>第五条</strong>　区县人民政府应当加强对本行政区域内法治乡村建设工作的领导，研究解决法治乡村建设中的重大问题，统筹推进法治乡村建设工作。镇人民政府、街道办事处应当按照工作职责做好法治乡村建设相关工作。</p>
+                            <p><strong>第六条</strong>　镇人民政府、街道办事处应当对制定和完善村民自治章程、村规民约工作给予指导。制定村民自治章程、村规民约应当以社会主义核心价值观为引领，传承优秀传统文化，推进乡村移风易俗，倡导优良家风家教。</p>
+                            <p><strong>第七条</strong>　村民委员会及其成员应当遵守并组织实施村民自治章程、村规民约，依法开展村务决策、村务公开及村务监督等乡村治理工作。村民享有法律、法规和村民自治章程、村规民约赋予的权利，参与法治乡村建设。</p>
+                            <p><strong>第八条</strong>　村级重大事项决策实行村党组织提议、村"两委"会议商议、党员大会审议、村民会议或村民代表会议决议，会议决议公开、实施结果公开。</p>
+                            <p><strong>第九条</strong>　村民委员会实行村务公开制度，应当设立村务公开栏，可以采用现代信息技术等便于村民知晓的方式进行村级事务公开，接受村民监督。</p>
+                            <p><strong>第十条</strong>　鼓励村民委员会通过村民会议、村民代表会议、村民议事会等开展村民说事、民情恳谈、百姓议事、妇女议事等协商活动，组织村民就村公共事务、重要民生问题等自治事项进行民主协商。</p>
+                            <p><strong>第十一条</strong>　涉农行政执法部门应当积极推进基层行政执法体制改革，合理配置执法资源，严格按照法定职责和权限执法，维护农民合法权益。</p>
+                            <p><strong>第十二条</strong>　涉农行政执法部门应当加强基层行政执法规范化建设，规范行政执法程序和行为，落实行政执法公示制度、行政执法全过程记录制度和重大执法决定法制审核制度。</p>
+                            <p><strong>第十三条</strong>　司法行政部门应当健全行政执法工作投诉举报处理机制，加大基层涉农行政执法监督力度，促进严格规范公正文明执法。</p>
+                            <p><strong>第十四条</strong>　区县人民政府应当健全农村社会治安防控体系，加强基础性制度、设施建设，提高乡村治理智能化、精细化水平。</p>
+                            <p><strong>第十五条</strong>　公安机关应当加强农村警务室建设，推行"一村一辅警"机制，开展农村治安防范工作指导，排查整治农村治安、交通安全隐患，防范和打击违法犯罪。</p>
+                            <p><strong>第十六条</strong>　司法行政、卫生健康、公安等部门应当按照各自职责加强对农村社区矫正对象、刑满释放人员、严重精神障碍患者、社区戒毒等特殊人群的教育监督和服务管理。</p>
+                            <p><strong>第十七条</strong>　司法行政部门应当加强对农村人民调解工作的指导，健全完善多元调解机制。镇人民政府、街道办事处、村民委员会依法设立人民调解委员会。涉及婚姻家庭、邻里关系、房屋宅基地等民间纠纷的，当事人可以向所在地人民调解委员会申请调解。</p>
+                            <p><strong>第十八条</strong>　区县司法行政部门应当在村民委员会设立公共法律服务工作室，为村级组织和村民提供法治宣传教育、法律咨询、人民调解等无偿法律服务。</p>
+                            <p><strong>第十九条</strong>　本市实行村法律顾问制度。村法律顾问应当按照法律、法规有关规定为乡村治理提供法律咨询，开展法治宣传教育，参与矛盾纠纷化解等法律服务工作。鼓励、支持村法律顾问为农村学校等提供公益法律服务。</p>
+                            <p><strong>第二十条</strong>　区县司法行政部门应当规范法律明白人的培训、使用、管理，培育以村"两委"成员、人民调解员、村民小组长等为主的法律明白人，指导、支持法律明白人积极开展法治宣传教育，带头参与法治实践。</p>
+                            <p><strong>第二十一条</strong>　依法支持、指导和帮助村民委员会开展法治宣传教育。村民委员会应当将法治宣传教育纳入村民自我教育内容，引导村民依法维护自身合法权益、表达诉求、化解纠纷，参与自我管理、自我服务。</p>
+                            <p><strong>第二十二条</strong>　实行"谁执法谁普法"普法责任制，有关部门和单位应当运用各类平台和形式，深入宣传与乡村生产生活密切相关的法律知识。</p>
+                            <p><strong>第二十三条</strong>　司法行政部门应当推动乡村法治文化场所建设，建立法治文化场所名录，并向社会公布。</p>
+                            <p><strong>第二十四条</strong>　济南高新技术产业开发区管理委员会、济南市南部山区管理委员会、济南新旧动能转换起步区管理委员会，按照职责权限执行本办法。</p>
+                            <p><strong>第二十五条</strong>　本办法自2026年2月1日起施行。</p>
+                        </div>
+                    </div>
+
+                    <!-- 财政金融支持产业发展若干措施解读 -->
+                    <div class="interpretation-content-wrap" id="finance" style="display: none;">
+                        <div class="interpretation-header">
+                            <h3 class="interpretation-title">济南市消防安全管理规定
+                                <!-- <span class="ai-tag">AI智能解读</span> -->
+                            </h3>
+                            <div class="interpretation-meta">
+                                <div><i class="fa fa-calendar"></i> 发布时间：2025-12-03</div>
+                                <div><i class="fa fa-user"></i> 发布单位：济南市人民政府</div>
+                                <div><i class="fa fa-eye"></i> 施行时间：2026-02-01</div>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-content">
+                            <p style="text-align:center; color:#666; font-size:13px;">（2002年10月11日济南市人民政府令第194号公布，2025年12月3日济南市人民政府令第300号修订，自2026年2月1日起施行）</p>
+
+                            <p><strong>第一条</strong>　为了加强消防安全管理，预防火灾和减少火灾危害，保护人身、财产安全，维护公共安全，根据《中华人民共和国消防法》、《山东省消防条例》等有关法律、法规，结合本市实际，制定本规定。</p>
+                            <p><strong>第二条</strong>　本规定适用于本市行政区域内的消防安全管理工作。</p>
+                            <p><strong>第三条</strong>　消防安全管理工作坚持人民至上、生命至上，贯彻预防为主、防消结合的方针，遵循政府统一领导、部门依法监管、单位全面负责、公民积极参与的原则。</p>
+                            <p><strong>第四条</strong>　应急管理部门负责消防工作的监督管理。消防救援部门负责实施消防安全综合监督管理、综合性消防救援、消防监督执法和火灾事故调查处理等工作。发展和改革、教育、公安、民政、财政、自然资源和规划、住房和城乡建设等有关部门在各自职责范围内，依法做好消防工作。</p>
+                            <p><strong>第五条</strong>　区县人民政府应当加强对本行政区域内消防工作的领导，及时解决消防安全管理中的重大问题，将消防事业经费列入本级财政预算，加强消防基础设施和智慧消防建设，提高消防科技水平。镇人民政府、街道办事处应当加强消防安全网格化管理，指导、督促辖区内单位做好消防工作，协助消防救援等部门实施消防监督管理。</p>
+                            <p><strong>第六条</strong>　村民委员会、居民委员会应当确定消防安全管理人，组织制定防火安全公约，开展防火安全检查。</p>
+                            <p><strong>第七条</strong>　机关、团体、企业、事业等单位应当落实消防安全主体责任，依法履行单位消防安全职责，制定消防安全制度、消防安全操作规程并公布实施。单位委托开展消防技术咨询、消防安全评估等消防技术服务的，消防安全责任仍由本单位负责。</p>
+                            <p><strong>第八条</strong>　个人应当遵守消防法律、法规、规章，学习防火、灭火常识以及逃生技能，安全用火、用电、用气，增强自防自救能力。</p>
+                            <p><strong>第九条</strong>　市消防救援部门应当会同市自然资源和规划等部门根据国土空间规划组织编制消防专项规划，经市人民政府批准后实施。消防专项规划应当包括消防安全布局、消防站、消防供水、消防通信及信息化、消防车通道、消防装备等内容。</p>
+                            <p><strong>第十条</strong>　人员密集场所应当按照标准配置消防设施、器材，在显著位置设置疏散示意图，并通过图画、广播、视频等形式，向公众宣传防火、灭火、疏散、逃生等方法。密室逃脱、剧本杀等新业态场所应当按照国家和省、市关于公共娱乐场所的消防安全管理要求，开展火灾风险自查整改，保障安全运营。</p>
+                            <p><strong>第十一条</strong>　同一建筑物由两个以上单位使用或者管理的，共用各方依法对自己使用或者管理部分的消防安全负责；共用各方应当明确责任人对共用的疏散通道、安全出口、消防设施和消防车通道进行统一管理。实行承包、租赁或者委托经营管理的，业主应当提供符合消防安全要求的建筑物，承包人、承租人、受托人对其使用或者管理范围内的消防安全负责。</p>
+                            <p><strong>第十二条</strong>　禁止在具有火灾、爆炸危险的场所吸烟、使用明火。因施工等特殊情况需要使用明火作业的，应当按照规定事先办理审批手续，并采取相应的消防安全措施。不得直接在裸露的可燃或者易燃材料上进行动火作业。</p>
+                            <p><strong>第十三条</strong>　使用易燃易爆危险品的单位，应当配备相适应的灭火器材、灭火药剂，保证易燃易爆危险品的安全使用，使用条件、工艺、场所应当符合法律法规和消防技术标准的要求。</p>
+                            <p><strong>第十四条</strong>　设有建筑外墙外保温系统的高层民用建筑，物业服务人应当在主入口以及周边相关显著位置设置提示性和警示性标识，标示外墙外保温材料的燃烧性能、防火要求，对破损、开裂和脱落的，应当及时修复。</p>
+                            <p><strong>第十五条</strong>　在建筑物外立面进行装修、装饰、节能改造和设置广告，应当符合消防安全要求，不得妨害防火、逃生和灭火救援。人员密集场所进行室内装修、装饰，应当使用符合消防技术标准的材料。</p>
+                            <p><strong>第十六条</strong>　物业服务人应当依照法律、法规和合同约定做好物业管理区域内的消防安全防范工作，加强消防安全巡查，发现占用、堵塞、封闭疏散通道、安全出口、消防车通道等违法行为，应当予以劝阻、制止；对不听劝阻的，应当及时向当地消防救援部门或者公安机关报告。</p>
+                            <p><strong>第十七条</strong>　建设工程竣工验收后开展物业承接查验时，建设单位应当与选聘的前期物业服务人共同查验物业管理区域内共用消防设施的完好状况，查验发现的问题由建设单位负责整改。</p>
+                            <p><strong>第十八条</strong>　供电、供气、供热、供水、通信、有线电视等专业运营单位依法对建筑物内由其管理的设施设备消防安全负责，并定期进行检查和维护。</p>
+                            <p><strong>第十九条</strong>　建筑物使用或者运营期间，应当确保安全出口、疏散通道畅通，不被占用、堵塞或者封闭。人员密集场所设置门禁系统的疏散门或者安全出口，应当确保火灾时能够及时打开，保障人员疏散逃生。</p>
+                            <p><strong>第二十条</strong>　国家工程建设消防技术标准要求设置火灾自动报警系统的建筑物和场所，应当安装符合标准的设备；未要求设置的人员密集场所，应当在容易发生火灾部位设置独立式火灾探测报警器。高层住宅等建筑物应当按照消防技术标准配置火灾探测报警器以及必要的逃生缓降器、逃生梯、自救呼吸器等装置。</p>
+                            <p><strong>第二十一条</strong>　消防安全重点单位应当每月、其他单位应当每季度至少进行1次防火检查，及时消除火灾隐患。消防安全重点单位应当每日开展防火巡查，公众聚集场所在营业期间应当至少每2小时开展1次防火巡查。鼓励生产经营单位建立火灾隐患内部报告奖励机制，加强正向激励。</p>
+                            <p><strong>第二十二条</strong>　消防救援等有关部门应当推进智慧消防建设，推动大数据、物联网等现代信息技术在火灾预防、区域火灾风险评估、灭火和应急救援等方面的应用，提升火灾预防、扑救和应急救援水平。</p>
+                            <p><strong>第二十三条</strong>　政府及其有关部门实施的消防安全服务事项，适合通过市场化方式提供的，可以按照政府购买公共服务的有关规定实施。鼓励保险公司参与消防工作，为投保单位提供火灾风险防范服务。</p>
+                            <p><strong>第二十四条</strong>　消防救援、住房和城乡建设、公安、市场监督管理等有关部门应当建立消防安全信息通报和执法协作机制，提高消防监督管理和灭火救援工作效能。</p>
+                            <p><strong>第二十五条</strong>　消防救援部门应当会同有关部门依法推进消防安全信用体系建设，推动完善消防安全信用监管制度和评价体系。</p>
+                            <p><strong>第二十六条</strong>　对在消防安全管理工作中作出突出贡献的单位和个人，按照有关规定给予表彰和奖励。</p>
+                            <p><strong>第二十七条</strong>　发生造成人员死亡或者产生社会影响的火灾事故，按照省、市有关规定组织开展火灾事故调查处理工作，坚持科学严谨、依法依规、实事求是、注重实效的原则，及时、准确地查清火灾事故原因，依法作出处理。</p>
+                            <p><strong>第二十八条</strong>　违反本规定的行为，法律、法规已规定法律责任的，适用其规定。</p>
+                            <p><strong>第二十九条</strong>　济南高新技术产业开发区管理委员会、济南市南部山区管理委员会、济南新旧动能转换起步区管理委员会，按照职责权限执行本规定。</p>
+                            <p><strong>第三十条</strong>　本规定自2026年2月1日起施行。</p>
+                        </div>
+                    </div>
+
+                    <!-- 基层社会治理现代化指导意见解读 -->
+                    <div class="interpretation-content-wrap" id="social-governance" style="display: none;">
+                        <div class="interpretation-header">
+                            <h3 class="interpretation-title">基层社会治理现代化指导意见
+                                <!-- <span class="ai-tag">AI智能解读</span> -->
+                            </h3>
+                            <div class="interpretation-meta">
+                                <div><i class="fa fa-calendar"></i> 发布时间：2024-12-20</div>
+                                <div><i class="fa fa-user"></i> 发布单位：社会治理部</div>
+                                <div><i class="fa fa-eye"></i> 浏览次数：1345</div>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-content">
+                            <p><strong>一、政策总体要求</strong></p>
+                            <p>《基层社会治理现代化指导意见》提出构建"党委领导、政府负责、社会协同、公众参与、法治保障、科技支撑"的基层社会治理新格局，提升基层治理体系和治理能力现代化水平。</p>
+                            
+                            <p><strong>二、主要工作任务</strong></p>
+                            <p>1. 治理体系建设：完善街道（乡镇）、社区（村）治理架构，明确治理职责，整合治理资源。</p>
+                            <p>2. 矛盾纠纷化解：建立一站式矛盾纠纷调解中心，实现矛盾纠纷就地发现、就地化解。</p>
+                            <p>3. 智慧治理建设：推进"智慧社区"、"智慧网格"建设，提升基层治理数字化水平。</p>
+                            <p>4. 平安建设：加强社会治安防控体系建设，提升公共安全保障能力。</p>
+                            
+                            <p><strong>三、AI解读创新亮点</strong></p>
+                            <p>AI分析认为，本政策的创新点在于将数字化、智能化手段全面应用于基层治理：一是建立基层治理大数据平台，实现治理数据实时汇聚、智能分析；二是推广智能感知设备，实现安全隐患、矛盾纠纷智能预警；三是开发基层治理APP，实现群众诉求一键上报、快速响应。</p>
+                        </div>
+                    </div>
+
+                    <!-- 重点产业扶持政策实施办法解读 -->
+                    <div class="interpretation-content-wrap" id="industry" style="display: none;">
+                        <div class="interpretation-header">
+                            <h3 class="interpretation-title">重点产业扶持政策实施办法
+                                <!-- <span class="ai-tag">AI智能解读</span> -->
+                            </h3>
+                            <div class="interpretation-meta">
+                                <div><i class="fa fa-calendar"></i> 发布时间：2024-12-15</div>
+                                <div><i class="fa fa-user"></i> 发布单位：产业促进部</div>
+                                <div><i class="fa fa-eye"></i> 浏览次数：1123</div>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-content">
+                            <p><strong>一、政策适用范围</strong></p>
+                            <p>《重点产业扶持政策实施办法》适用于辖区内从事数字经济、高端制造、现代服务业、绿色产业等四大类重点产业的企业，涵盖企业培育、技术创新、市场拓展、人才引育等全生命周期。</p>
+                            
+                            <p><strong>二、扶持方式及标准</strong></p>
+                            <p>1. 企业培育：对首次入选规上企业、高新技术企业的给予10-50万元奖励。</p>
+                            <p>2. 技术创新：对企业研发投入给予最高10%的补贴，单个企业年度补贴不超过200万元。</p>
+                            <p>3. 市场拓展：对企业参加国内外展会、开展品牌建设给予费用补贴。</p>
+                            <p>4. 人才引育：对企业引进的高层次人才给予安家补贴、子女入学等优惠政策。</p>
+                            
+                            <p><strong>三、AI解读申报要点</strong></p>
+                            <p>AI智能梳理了政策申报的核心要点：一是申报时间集中在每年3月和9月，企业需提前准备相关材料；二是申报材料实行线上提交，可通过产业扶持申报系统办理；三是政策实行"免申即享"改革，符合条件的企业无需申报自动享受相关补贴。</p>
+                        </div>
+                    </div>
+
+                    <!-- 城市建设管理标准化规范解读 -->
+                    <div class="interpretation-content-wrap" id="construction" style="display: none;">
+                        <div class="interpretation-header">
+                            <h3 class="interpretation-title">城市建设管理标准化规范
+                                <!-- <span class="ai-tag">AI智能解读</span> -->
+                            </h3>
+                            <div class="interpretation-meta">
+                                <div><i class="fa fa-calendar"></i> 发布时间：2024-12-10</div>
+                                <div><i class="fa fa-user"></i> 发布单位：建设管理部</div>
+                                <div><i class="fa fa-eye"></i> 浏览次数：987</div>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-content">
+                            <p><strong>一、规范制定背景</strong></p>
+                            <p>为提升城市建设管理水平，规范建设行为，提高工程质量，建设管理部结合实际制定《城市建设管理标准化规范》，涵盖规划设计、工程建设、市政管理、物业服务等10个方面、86项具体标准。</p>
+                            
+                            <p><strong>二、核心标准内容</strong></p>
+                            <p>1. 规划设计标准：明确城市各类用地规划、建筑设计、基础设施配套等标准要求。</p>
+                            <p>2. 工程建设标准：规范工程建设程序、质量管控、安全管理、竣工验收等环节。</p>
+                            <p>3. 市政管理标准：制定道路、绿化、照明、排水等市政设施管理维护标准。</p>
+                            <p>4. 物业服务标准：明确物业服务企业服务内容、服务质量、收费标准等要求。</p>
+                            
+                            <p><strong>三、AI解读执行要求</strong></p>
+                            <p>AI分析表明，本规范具有强制性、科学性、可操作性三大特点：强制性体现在所有城市建设管理活动必须严格执行；科学性体现在标准制定充分结合实际并借鉴先进经验；可操作性体现在标准具体明确，便于执行和监督。相关部门将建立AI监督检查系统，对标准执行情况进行智能监测。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第二部分：通知公告 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-bell"></i>
+                通知公告
+            </h2>
+
+            <div class="notice-list">
+                <div class="notice-item">
+                    <div class="notice-date">
+                        <div class="notice-date-day">15</div>
+                        <div class="notice-date-month">2025-01</div>
+                    </div>
+                    <div class="notice-content">
+                        <h3 class="notice-title">关于开展2025年度政务服务能力评估的通知
+                            <span class="notice-tag tag-urgent">紧急</span>
+                        </h3>
+                        <p class="notice-desc">为全面评估各部门政务服务能力水平，进一步提升政务服务质量，决定开展2025年度政务服务能力评估工作。评估内容包括办件效率、群众满意度、系统应用等方面，请各部门于2025年1月25日前完成自评并提交相关材料。</p>
+                        <div class="notice-ops">
+                          
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notice-item">
+                    <div class="notice-date">
+                        <div class="notice-date-day">10</div>
+                        <div class="notice-date-month">2025-01</div>
+                    </div>
+                    <div class="notice-content">
+                        <h3 class="notice-title">关于举办数字城市建设专题培训的通知
+                            <span class="notice-tag tag-important">重要</span>
+                        </h3>
+                        <p class="notice-desc">为提升工作人员数字城市建设专业能力，定于2025年1月20日举办数字城市建设专题培训班，邀请行业专家授课，内容包括数字城市规划、数据中台建设、AI应用等。请各部门安排相关人员报名参加，报名截止日期为2025年1月18日。</p>
+                        <div class="notice-ops">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notice-item">
+                    <div class="notice-date">
+                        <div class="notice-date-day">08</div>
+                        <div class="notice-date-month">2025-01</div>
+                    </div>
+                    <div class="notice-content">
+                        <h3 class="notice-title">2025年春节假期政务服务安排通知
+                            <span class="notice-tag tag-normal">普通</span>
+                        </h3>
+                        <p class="notice-desc">根据国务院办公厅通知精神，2025年春节假期为1月29日至2月4日，共7天。假期期间，政务服务大厅暂停现场办理业务，线上政务服务平台正常运行。请各部门做好假期值班安排，确保紧急事项及时处理。</p>
+                        <div class="notice-ops">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notice-item">
+                    <div class="notice-date">
+                        <div class="notice-date-day">05</div>
+                        <div class="notice-date-month">2025-01</div>
+                    </div>
+                    <div class="notice-content">
+                        <h3 class="notice-title">关于更新政务办公系统权限的通知
+                            <span class="notice-tag tag-normal">普通</span>
+                        </h3>
+                        <p class="notice-desc">为进一步规范政务办公系统使用管理，根据人员调整和工作需要，对系统权限进行全面更新。请各部门管理员于2025年1月12日前核对本部门人员权限，如有调整需求请提交书面申请，系统更新将于2025年1月15日生效。</p>
+                        <div class="notice-ops">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notice-item">
+                    <div class="notice-date">
+                        <div class="notice-date-day">30</div>
+                        <div class="notice-date-month">2024-12</div>
+                    </div>
+                    <div class="notice-content">
+                        <h3 class="notice-title">关于做好2024年度工作总结的通知
+                            <span class="notice-tag tag-urgent">紧急</span>
+                        </h3>
+                        <p class="notice-desc">请各部门认真总结2024年度工作完成情况，梳理工作亮点、存在问题及2025年工作计划，形成书面总结材料。总结材料需包括工作完成情况、数据统计、典型案例、下一步计划等内容，于2025年1月8日前报送至办公室。</p>
+                        <div class="notice-ops">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部（复用） -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-col">
+                    <h3>平台导航</h3>
+                    <ul>
+                        <li>首页</li>
+                        <li>AI办公</li>
+                        <li>政务办公</li>
+                        <li>数字大脑</li>
+                        <li>政策通知</li>
+                        <li>办公助手</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>常用服务</h3>
+                    <ul>
+                        <li>民意速办平台</li>
+                        <li>数据填报平台</li>
+                        <li>视频监控平台</li>
+                        <li>AI公文写作</li>
+                        <li>公文模板库</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>部门入口</h3>
+                    <ul>
+                        <li>数字城市部</li>
+                        <li>办公室</li>
+                        <li>党群工作部</li>
+                        <li>宣传文化部</li>
+                        <li>社会治理部</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li>技术支持：0531-66604396</li>
+                        <li>工作时间：9:00-17:00</li>
+                        <li>地址：起步区管委会城市运营指挥中心</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 政务内部统一办公门户 版权所有 | 京ICP备12345678号-1</p>
+                <p>技术支持：政务信息化建设中心</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 智能问答机器人 -->
+    <div class="ai-chatbot">
+        <div class="chatbot-toggle" id="chatbotToggle">
+            <i class="fa fa-robot"></i>
+        </div>
+        <div class="chatbot-panel" id="chatbotPanel">
+            <div class="chatbot-header">
+                <div class="chatbot-title">智能问答助手</div>
+                <div class="chatbot-close" id="chatbotClose">×</div>
+            </div>
+            <div class="chatbot-body" id="chatbotBody">
+                <div class="chat-message bot">
+                    <div class="message-content">
+                        您好！我是智能问答助手，有什么可以帮助您的？
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" class="chatbot-input" id="chatbotInput" placeholder="请输入您的问题...">
+                <button class="chatbot-send" id="chatbotSend"><i class="fa fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 政策切换JS -->
+    <script>
+        // 获取政策列表项和解读内容
+        const policyItems = document.querySelectorAll('.policy-item');
+        const interpretationWraps = document.querySelectorAll('.interpretation-content-wrap');
+
+        // 为每个政策项添加点击事件
+        policyItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // 移除所有政策项的active类
+                policyItems.forEach(i => i.classList.remove('active'));
+                // 给当前点击的政策项添加active类
+                item.classList.add('active');
+
+                // 获取当前政策标识
+                const policyId = item.getAttribute('data-policy');
+                
+                // 隐藏所有解读内容
+                interpretationWraps.forEach(wrap => {
+                    wrap.style.display = 'none';
+                });
+                
+                // 显示对应解读内容
+                document.getElementById(policyId).style.display = 'block';
+            });
+        });
+
+        // 智能问答机器人功能
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotPanel = document.getElementById('chatbotPanel');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const chatbotBody = document.getElementById('chatbotBody');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSend = document.getElementById('chatbotSend');
+
+        // 切换机器人面板显示/隐藏
+        chatbotToggle.addEventListener('click', function() {
+            chatbotPanel.classList.toggle('show');
+        });
+
+        // 关闭机器人面板
+        chatbotClose.addEventListener('click', function() {
+            chatbotPanel.classList.remove('show');
+        });
+
+        // 发送消息
+        function sendMessage() {
+            const message = chatbotInput.value.trim();
+            if (message) {
+                // 添加用户消息
+                addMessage('user', message);
+                chatbotInput.value = '';
+
+                // 模拟机器人回复
+                setTimeout(() => {
+                    const reply = getBotReply(message);
+                    addMessage('bot', reply);
+                }, 500);
+            }
+        }
+
+        // 添加消息到聊天窗口
+        function addMessage(type, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${content}
+                </div>
+            `;
+            chatbotBody.appendChild(messageDiv);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        // 简单的机器人回复逻辑
+        function getBotReply(message) {
+            message = message.toLowerCase();
+            
+            if (message.includes('你好') || message.includes('您好') || message.includes('hi') || message.includes('hello')) {
+                return '您好！我是政务智能问答助手，很高兴为您服务。';
+            } else if (message.includes('用印') || message.includes('盖章')) {
+                return '您可以在办公助手页面下载用印申请模板，或者直接访问政务办公系统进行用印申请。';
+            } else if (message.includes('发文') || message.includes('公文')) {
+                return '您可以在办公助手页面下载发文模板，或者使用AI办公中的公文写作工具生成公文。';
+            } else if (message.includes('logo') || message.includes('图片')) {
+                return '您可以在办公助手页面的常用图片素材 section 下载区内LOGO和其他常用图片。';
+            } else if (message.includes('ppt') || message.includes('模板')) {
+                return '您可以在办公助手页面下载各种PPT模板，包括党建、工作汇报等类型。';
+            } else if (message.includes('政策') || message.includes('通知')) {
+                return '您可以在政策通知页面查看最新的政策文件和通知公告。';
+            } else if (message.includes('系统') || message.includes('平台')) {
+                return '您可以在政务办公页面访问各个部门的业务系统，或者在首页的常用系统 section 快速访问常用系统。';
+            } else if (message.includes('数字大脑')) {
+                return '数字大脑页面展示了部门一张图和街办分中心的可视化数据，助力政务决策。';
+            } else if (message.includes('ai办公') || message.includes('智能办公')) {
+                return 'AI办公页面提供了AI公文写作、公文模板库、AI知识库等智能工具，提升办公效率。';
+            } else if (message.includes('帮助') || message.includes('指南')) {
+                return '您可以在各个页面的帮助中心获取使用指南，或者直接向我咨询具体问题。';
+            } else {
+                return '抱歉，我暂时无法回答这个问题。您可以尝试换一种方式提问，或者联系技术支持获取帮助。';
+            }
+        }
+
+        // 发送按钮点击事件
+        chatbotSend.addEventListener('click', sendMessage);
+
+        // 回车键发送消息
+        chatbotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

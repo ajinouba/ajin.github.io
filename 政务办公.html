@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政务办公 - 起步区数字统一门户</title>
+    <style>
+        /* 复用全局基础样式（和首页/AI办公页面一致） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #005ea5;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #004a87;
+        }
+
+        .btn-secondary {
+            background-color: #f0f2f5;
+            color: #333;
+            border: 1px solid #dcdfe6;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e8eaed;
+        }
+
+        /* 小程序二维码样式（复用） */
+        .mini-program {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .mini-program-trigger {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .mini-program-trigger:hover {
+            background-color: #004a87;
+            transform: scale(1.05);
+        }
+
+        .mini-program-content {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            display: none;
+            width: 180px;
+            text-align: center;
+        }
+
+        .mini-program:hover .mini-program-content {
+            display: block;
+        }
+
+        .mini-program-qrcode {
+            width: 150px;
+            height: 150px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .mini-program-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* 顶部导航（复用，仅调整active状态） */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        /* 全局搜索样式 */
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #005ea5;
+            box-shadow: 0 0 0 2px rgba(0, 94, 165, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #005ea5;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #004a87;
+        }
+
+        /* 智能问答机器人样式 */
+        .ai-chatbot {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 9999;
+        }
+
+        .chatbot-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 94, 165, 0.3);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .chatbot-toggle:hover {
+            background-color: #004a87;
+            transform: scale(1.1);
+        }
+
+        .chatbot-panel {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            width: 320px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: none;
+        }
+
+        .chatbot-panel.show {
+            display: block;
+        }
+
+        .chatbot-header {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chatbot-close {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+
+        .chat-message.bot {
+            justify-content: flex-start;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+
+        .bot .message-content {
+            background-color: #f0f7ff;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user .message-content {
+            background-color: #005ea5;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chatbot-input-area {
+            border-top: 1px solid #f0f2f5;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chatbot-send {
+            background-color: #005ea5;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chatbot-send:hover {
+            background-color: #004a87;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #005ea5;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            color: #005ea5;
+        }
+
+        .header-nav {
+            padding: 0;
+        }
+
+        .nav-list {
+            display: flex;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-item:hover {
+            color: #005ea5;
+        }
+
+        .nav-item.active {
+            color: #005ea5;
+            border-bottom: 3px solid #005ea5;
+        }
+
+        /* 页面标题区（复用） */
+        .page-header {
+            background-color: #e6f4ff;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #005ea5;
+            margin-bottom: 10px;
+        }
+
+        .page-desc {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* 通用区块样式（复用+扩展） */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #005ea5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #005ea5;
+            font-size: 20px;
+        }
+
+        /* 新增：部门布局（左侧导航+右侧内容） */
+        .dept-layout {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* 左侧部门导航 - 核心修改：去掉icon、放大字体 */
+        .dept-sidebar {
+            width: 220px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px 0;
+            flex-shrink: 0;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+
+        .dept-sidebar-title {
+            padding: 0 20px 15px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #f0f2f5;
+            margin-bottom: 10px;
+        }
+
+        .dept-sidebar-list {
+            padding: 10px 0;
+        }
+
+        .dept-sidebar-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px; /* 放大字体：从14px改为16px */
+            font-weight: 500; /* 增加字体权重，更醒目 */
+            display: block; /* 去掉flex布局，因为没有icon了 */
+        }
+
+        .dept-sidebar-item:hover {
+            background-color: #f0f7ff;
+            color: #005ea5;
+        }
+
+        .dept-sidebar-item.active {
+            background-color: #e6f4ff;
+            color: #005ea5;
+            border-left: 3px solid #005ea5;
+        }
+
+        /* 右侧部门内容区 */
+        .dept-content {
+            flex: 1;
+        }
+
+        /* 部门容器样式 */
+        .dept-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            display: none;
+        }
+
+        .dept-container.active {
+            display: block;
+        }
+
+        .dept-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .dept-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #e6f4ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 30px;
+        }
+
+        .dept-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #005ea5;
+        }
+
+        .dept-desc {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* 系统入口卡片样式 */
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .system-card {
+            border: 1px solid #e8eaed;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .system-card:hover {
+            border-color: #005ea5;
+            box-shadow: 0 4px 12px rgba(0, 94, 165, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .system-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .system-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f0f7ff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 18px;
+        }
+
+        .system-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .system-desc {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        .system-ops {
+            text-align: right;
+        }
+
+        /* 底部样式（复用） */
+        .footer {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-col h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-col ul {
+            font-size: 13px;
+        }
+
+        .footer-col li {
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .footer-col li:hover {
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 正在开发中弹窗样式 */
+        .developing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .developing-box {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 60px 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        .developing-icon {
+            font-size: 70px;
+            color: #005ea5;
+            margin-bottom: 25px;
+            opacity: 0.8;
+        }
+        .developing-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .developing-desc {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 0;
+            }
+
+            .nav-list {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .nav-item {
+                padding: 10px 15px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .page-desc {
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            /* 响应式：左侧导航转为顶部横向 */
+            .dept-layout {
+                flex-direction: column;
+            }
+
+            .dept-sidebar {
+                width: 100%;
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .dept-sidebar-list {
+                display: flex;
+                overflow-x: auto;
+                padding: 0;
+            }
+
+            .dept-sidebar-item {
+                white-space: nowrap;
+                border-left: none !important;
+                border-bottom: 3px solid transparent;
+                padding: 10px 15px;
+                font-size: 15px; /* 移动端字体稍作调整 */
+            }
+
+            .dept-sidebar-item.active {
+                border-left: none;
+                border-bottom: 3px solid #005ea5;
+            }
+
+            .dept-container {
+                padding: 20px;
+            }
+
+            .system-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mini-program {
+                display: none;
+            }
+        }
+    </style>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 小程序二维码入口（复用） -->
+    <div class="mini-program">
+        <div class="mini-program-trigger">
+            <i class="fa fa-qrcode"></i>
+        </div>
+        <div class="mini-program-content">
+            <div class="mini-program-qrcode">
+                <div>
+                    <i class="fa fa-qrcode" style="font-size: 40px; margin-bottom: 10px;"></i>
+                    <p>起步区接诉即办</p>
+                    <p>小程序二维码</p>
+                </div>
+            </div>
+            <div class="mini-program-name">起步区接诉即办</div>
+        </div>
+    </div>
+
+    <!-- 顶部导航（政务办公页面标记为active） -->
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMwMDVlYTVjIi8+CjxwYXRoIGQ9Ik0yMCAxMFYzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTEwIDIwSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=" alt="政务平台logo">
+                    <div class="logo-text">起步区数字统一门户</div>
+                </div>
+                <!-- 全局搜索 -->
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索政策、系统、服务...">
+                    <button class="search-btn"><i class="fa fa-search"></i></button>
+                </div>
+                <div class="user-area">
+                    <div class="user-info">
+                        <div class="user-avatar"><i class="fa fa-user"></i></div>
+                        <span>政务管理员</span>
+                    </div>
+                    <div class="logout-btn" id="logout-btn"><i class="fa fa-sign-out-alt"></i> 退出登录</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="./统一办公2.html">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./ai办公.html">AI办公</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="./政务办公.html">政务办公</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./数字大脑.html">数字大脑</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./政策通知.html">政策通知</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./办公助手.html">办公助手</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题区 -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">政务办公系统入口</h1>
+            <p class="page-desc">集中展示各部门业务系统，一站式访问，提升政务办公效率</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- 部门系统入口区域 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-building"></i>
+                各部门业务系统
+            </h2>
+
+            <!-- 新增：部门布局（左侧导航+右侧内容） -->
+            <div class="dept-layout">
+                <!-- 左侧部门导航 - 核心修改：更新部门列表、去掉icon、放大字体 -->
+                <div class="dept-sidebar">
+                    <div class="dept-sidebar-title">部门列表</div>
+                    <ul class="dept-sidebar-list">
+                        <li class="dept-sidebar-item" data-dept="office">办公室</li>
+                        <li class="dept-sidebar-item" data-dept="party-work">党群工作部</li>
+                        <li class="dept-sidebar-item" data-dept="propaganda">宣传文化部</li>
+                        <li class="dept-sidebar-item" data-dept="social-governance">社会治理部</li>
+                        <li class="dept-sidebar-item" data-dept="economic-development">经济发展部</li>
+                        <li class="dept-sidebar-item" data-dept="industry-promotion">产业促进部</li>
+                        <li class="dept-sidebar-item" data-dept="finance">财政金融部</li>
+                        <li class="dept-sidebar-item" data-dept="planning">规划和自然资源部</li>
+                        <li class="dept-sidebar-item" data-dept="miit">工信科技部</li>
+                        <li class="dept-sidebar-item" data-dept="construction">建设管理部</li>
+                        <li class="dept-sidebar-item" data-dept="social-affairs">社会事业部</li>
+                        <li class="dept-sidebar-item" data-dept="law-enforcement">综合执法部</li>
+                        <li class="dept-sidebar-item active" data-dept="digital-city">数字城市部</li>
+                    </ul>
+                </div>
+
+                <!-- 右侧部门内容 -->
+                <div class="dept-content">
+                    <!-- 数字城市部（默认选中，系统名称保持不变） -->
+                    <div class="dept-container active" id="digital-city">
+                        <div class="dept-header">
+                            <div class="dept-icon">
+                                <i class="fa fa-city"></i>
+                            </div>
+                            <div>
+                                <h3 class="dept-title">数字城市部</h3>
+                                <p class="dept-desc">负责数字城市规划、建设、运营及相关系统管理</p>
+                            </div>
+                        </div>
+
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                    </div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时监控城市运行状态，整合交通、安防、环境等多维度数据，支持城市精细化管理。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-project-diagram"></i></div>
+                                    <h4 class="system-name">起步区建设项目综合管理平台</h4>
+                                </div>
+                                <p class="system-desc">起步区工程建设项目全生命周期的数据汇集和项目标准化管理。</p>
+                                <div class="system-ops">
+                                    <a href="http://60.208.85.78:20600" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-home"></i></div>
+                                    <h4 class="system-name">起步区理想社区平台</h4>
+                                </div>
+                                <p class="system-desc">智慧化社区管理系统，辅助社区进行管理和居民服务。</p>
+                                <div class="system-ops">
+                                    <a href="https://lxsq.jnqbqzhcs.com:9091/futurecommunity-centernew/?domainName=jnqbq-standard2.0.ictsoft.cn#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-server"></i></div>
+                                    <h4 class="system-name">政务服务信息化建设项目</h4>
+                                </div>
+                                <p class="system-desc">整合服务资源，集成政务服务、便民服务功能，打造起步区政务微门户网站。</p>
+                                <div class="system-ops">
+                                    <a href="http://172.16.70.62" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-robot"></i></div>
+                                    <h4 class="system-name">数字人"黄小政"</h4>
+                                </div>
+                                <p class="system-desc">超写实智能数字人，实现智能咨询、业务导办与政策解读等7×24小时服务。</p>
+                                <div class="system-ops">
+                                    <a href="http://100.182.2.29" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-file-invoice"></i></div>
+                                    <h4 class="system-name">全国代理记账行业监管服务平台</h4>
+                                </div>
+                                <p class="system-desc">代理记账机构备案、监管及行业数据统计管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://dljz.mof.gov.cn/#/homePage" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-stamp"></i></div>
+                                    <h4 class="system-name">山东省药品监督管理局行政许可审批系统</h4>
+                                </div>
+                                <p class="system-desc">药品行政许可事项网上申报、审批及许可证管理。</p>
+                                <div class="system-ops">
+                                    <a href="http://60.216.97.246:8089/sdfda/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-chart-bar"></i></div>
+                                    <h4 class="system-name">国家市场监管总局统计调查信息系统</h4>
+                                </div>
+                                <p class="system-desc">市场监管统计调查数据填报与管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://zjtongji.gsxt.gov.cn:9898/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+
+                            <!-- 系统2：智慧城市规划系统（名称和首页一致） -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon">
+                                        <i class="fa fa-map-marked-alt"></i>
+                                    </div>
+                                    <h4 class="system-name">车路云一体化平台</h4>
+                                </div>
+                                <p class="system-desc">无人车业务申报与安全监测管理，基于城市空间实现车路云协同感知与调度。</p>
+                                <div class="system-ops">
+                                    <a href="http://60.208.140.178:50012/user/login?redirect=%2Fdashboard%2Fanalysis" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 其他部门占位容器（如需完善可补充内容） -->
+                    <div class="dept-container" id="office">
+                        <div class="dept-header">
+                            <div class="dept-icon">
+                                <i class="fa fa-briefcase"></i>
+                            </div>
+                            <div>
+                                <h3 class="dept-title">办公室</h3>
+                                <p class="dept-desc">负责综合协调、公文处理、会议组织及后勤保障等工作</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                    </div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="party-work">
+                        <div class="dept-header">
+                            <div class="dept-icon">
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <div>
+                                <h3 class="dept-title">党群工作部</h3>
+                                <p class="dept-desc">负责党建、群团、纪检监察等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                    </div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 以下为其他部门占位容器，如需完善可补充对应系统内容 -->
+                    <div class="dept-container" id="propaganda">
+                        <div class="dept-header">
+                            <div class="dept-icon">
+                                <i class="fa fa-bullhorn"></i>
+                            </div>
+                            <div>
+                                <h3 class="dept-title">宣传文化部</h3>
+                                <p class="dept-desc">负责宣传、文化、精神文明建设等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                    </div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="social-governance">
+                        <div class="dept-header">
+                            <div class="dept-icon">
+                                <i class="fa fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="dept-title">社会治理部</h3>
+                                <p class="dept-desc">负责社会治理、信访维稳、基层治理等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tachometer-alt"></i></div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-video"></i></div>
+                                    <h4 class="system-name">雪亮工程系统</h4>
+                                </div>
+                                <p class="system-desc">以公共安全视频监控联网应用为重点的"群众性治安防控工程"。</p>
+                                <div class="system-ops">
+                                    <a href="http://192.168.202.1" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-balance-scale"></i></div>
+                                    <h4 class="system-name">起步区法律服务综合管理平台</h4>
+                                </div>
+                                <p class="system-desc">公共法律服务业务受理，法律服务机构及人员信息管理，行政复议及行政应诉案件等管理。</p>
+                                <div class="system-ops">
+                                    <a href="http://111.34.80.174" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-home"></i></div>
+                                    <h4 class="system-name">起步区理想社区平台</h4>
+                                </div>
+                                <p class="system-desc">智慧化社区管理系统，辅助社区进行管理和居民服务。</p>
+                                <div class="system-ops">
+                                    <a href="http://111.34.80.174" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-fire-extinguisher"></i></div>
+                                    <h4 class="system-name">消防监督管理系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建消防监督管理平台，支持消防工作组日常监督执法。</p>
+                                <div class="system-ops">
+                                    <a href="http://117.73.254.171:10010/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-hard-hat"></i></div>
+                                    <h4 class="system-name">山东省安全生产信息平台</h4>
+                                </div>
+                                <p class="system-desc">省级安全生产综合监管平台，支持执法人员日常监管工作。</p>
+                                <div class="system-ops">
+                                    <a href="http://www.sdaj.gov.cn/infobase/logincenter?userType=gov" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-cloud-rain"></i></div>
+                                    <h4 class="system-name">自然灾害灾情管理系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建自然灾害灾情信息管理与上报平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://www.nndims.com/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-boxes"></i></div>
+                                    <h4 class="system-name">省救灾和物资保障管理系统</h4>
+                                </div>
+                                <p class="system-desc">省级救灾物资调配、储备及保障管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://117.73.255.132:38082/login/rescue" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-exclamation-triangle"></i></div>
+                                    <h4 class="system-name">自然灾害综合风险应急管理系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建自然灾害综合风险评估与应急管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://mh.mem.cegn.cn" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-shield-alt"></i></div>
+                                    <h4 class="system-name">泉城安全济南市安全生产综合监管平台</h4>
+                                </div>
+                                <p class="system-desc">济南市安全生产综合监管，覆盖各街道及生产经营单位。</p>
+                                <div class="system-ops">
+                                    <a href="http://124.128.226.230:8090/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-flask"></i></div>
+                                    <h4 class="system-name">山东省危险化学品数字化管控系统</h4>
+                                </div>
+                                <p class="system-desc">省级危险化学品生产、储存、经营全链条数字化监管。</p>
+                                <div class="system-ops">
+                                    <a href="http://sdwh.nrcc.com.cn:6200/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-search"></i></div>
+                                    <h4 class="system-name">山东省安全评价检测检验机构管理系统</h4>
+                                </div>
+                                <p class="system-desc">省级安全评价、检测检验中介机构资质管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://www.sdaj.gov.cn/intermediary/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-registered"></i></div>
+                                    <h4 class="system-name">危险化学品登记综合服务系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建危险化学品登记注册与综合管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://whpdj.mem.gov.cn/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-dollar-sign"></i></div>
+                                    <h4 class="system-name">安全生产费用直报系统</h4>
+                                </div>
+                                <p class="system-desc">省级安全生产费用提取与使用情况统计直报平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://aqsc-anquanfeiyong.mem.gov.cn/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-handshake"></i></div>
+                                    <h4 class="system-name">山东省"一站式"矛盾纠纷多元化解平台</h4>
+                                </div>
+                                <p class="system-desc">省级矛盾纠纷多元调处化解，覆盖街道矛调工作人员。</p>
+                                <div class="system-ops">
+                                    <a href="https://jinan.sdyzs.gov.cn:10192/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-balance-scale"></i></div>
+                                    <h4 class="system-name">济南市"一站式"矛盾纠纷多元调处化解调度平台</h4>
+                                </div>
+                                <p class="system-desc">济南市矛盾纠纷调处化解全流程调度管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://jinanodradmin.yilvs.com:2280/login?redirect=%2Fhome" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-globe"></i></div>
+                                    <h4 class="system-name">济南市政府网站和政务新媒体监管平台</h4>
+                                </div>
+                                <p class="system-desc">政府网站与政务新媒体内容发布、监管与考核平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://221.214.69.232:30932/jpaas/cms/info/mypublic/recycle" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-bolt"></i></div>
+                                    <h4 class="system-name">闪电云平台</h4>
+                                </div>
+                                <p class="system-desc">市级统建媒体资源云平台，支持政务新媒体内容管理。</p>
+                                <div class="system-ops">
+                                    <a href="https://shandianyun.iqilu.com/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="economic-development">
+                        <div class="dept-header">
+                            <div class="dept-icon">
+                                <i class="fa fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <h3 class="dept-title">经济发展部</h3>
+                                <p class="dept-desc">负责经济运行、产业规划、项目管理等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                    </div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-project-diagram"></i></div>
+                                    <h4 class="system-name">起步区建设项目综合管理平台</h4>
+                                </div>
+                                <p class="system-desc">起步区工程建设项目全生命周期的数据汇集和项目标准化管理。</p>
+                                <div class="system-ops">
+                                    <a href="http://60.208.85.78:20600" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="industry-promotion">
+                        <div class="dept-header">
+                            <div class="dept-icon"><i class="fa fa-industry"></i></div>
+                            <div>
+                                <h3 class="dept-title">产业促进部</h3>
+                                <p class="dept-desc">负责产业培育、企业服务、招商引资等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tachometer-alt"></i></div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-handshake"></i></div>
+                                    <h4 class="system-name">济南市招商引资项目库</h4>
+                                </div>
+                                <p class="system-desc">济南市招商引资重点项目库管理与跟踪平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://59.206.133.178/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-project-diagram"></i></div>
+                                    <h4 class="system-name">山东省对外招商引资重点项目库</h4>
+                                </div>
+                                <p class="system-desc">省级对外招商引资重点项目信息管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://kp.invest.sdcom.gov.cn/#/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-gas-pump"></i></div>
+                                    <h4 class="system-name">山东省成品油经营企业信息管理系统</h4>
+                                </div>
+                                <p class="system-desc">省级成品油经营企业资质、经营情况信息管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://oil.sdcom.gov.cn/m" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-store"></i></div>
+                                    <h4 class="system-name">商务部业务系统统一平台</h4>
+                                </div>
+                                <p class="system-desc">国家统建商务部业务综合管理平台，覆盖商贸发展各类业务。</p>
+                                <div class="system-ops">
+                                    <a href="http://ecomp.mofcom.gov.cn/loginCorp.html" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-industry"></i></div>
+                                    <h4 class="system-name">山东省化工专项行动智慧化工综合管理服务平台</h4>
+                                </div>
+                                <p class="system-desc">省级化工行业专项整治与综合监管服务平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://123.232.119.120:8091/gateway/index" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-cloud"></i></div>
+                                    <h4 class="system-name">山东省科技云平台</h4>
+                                </div>
+                                <p class="system-desc">省级科技资源共享与科技项目管理云服务平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://cloud.kjt.shandong.gov.cn/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-cloud"></i></div>
+                                    <h4 class="system-name">济南市科技云平台</h4>
+                                </div>
+                                <p class="system-desc">济南市科技项目申报、管理及成果转化服务平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://119.164.252.194/a/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-chart-line"></i></div>
+                                    <h4 class="system-name">山东省工业经济综合决策分析平台</h4>
+                                </div>
+                                <p class="system-desc">省级工业经济运行数据综合分析与决策支持平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://119.148.161.114:8061/portalIndex" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-desktop"></i></div>
+                                    <h4 class="system-name">电子政务综合服务平台</h4>
+                                </div>
+                                <p class="system-desc">省级电子政务综合服务平台，支持工信业务办理。</p>
+                                <div class="system-ops">
+                                    <a href="http://123.232.119.104:13001/token/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-rocket"></i></div>
+                                    <h4 class="system-name">省瞪羚独角兽申报系统</h4>
+                                </div>
+                                <p class="system-desc">省级瞪羚、独角兽企业认定申报与管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://www.sdsdldjsqy.com" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-layer-group"></i></div>
+                                    <h4 class="system-name">山东省优质中小企业梯度培育库管理端</h4>
+                                </div>
+                                <p class="system-desc">省级优质中小企业梯度培育认定与管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://www.yztdpt.cn/sys/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="finance">
+                        <div class="dept-header">
+                            <div class="dept-icon"><i class="fa fa-money"></i></div>
+                            <div>
+                                <h3 class="dept-title">财政金融部</h3>
+                                <p class="dept-desc">负责财政管理、金融服务、投融资等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tachometer-alt"></i></div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-file-invoice-dollar"></i></div>
+                                    <h4 class="system-name">财务部统一报表系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建财政报表数据填报与汇总管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://czbtybb.mof.gov.cn/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-exchange-alt"></i></div>
+                                    <h4 class="system-name">新旧动能转换基金管理系统</h4>
+                                </div>
+                                <p class="system-desc">省级新旧动能转换基金投放、管理与监督平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://117.73.21.5:8090/login?redirect=%2Findex" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-table"></i></div>
+                                    <h4 class="system-name">山东省财政企业财务信息报送系统</h4>
+                                </div>
+                                <p class="system-desc">省级财政企业财务信息定期报送与管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://124.128.19.221:9097/Default.aspx" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-city"></i></div>
+                                    <h4 class="system-name">山东省城投债务管理信息系统</h4>
+                                </div>
+                                <p class="system-desc">省级城市投融资债务管理与风险监测信息平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://ctzgl.sdcz.gov.cn:19997/index" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-coins"></i></div>
+                                    <h4 class="system-name">济南市财政局基金检测一体化系统</h4>
+                                </div>
+                                <p class="system-desc">济南市财政基金运营检测与风险预警管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://112.230.197.174:8081/fund/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-archive"></i></div>
+                                    <h4 class="system-name">济南市资产数字化管理平台</h4>
+                                </div>
+                                <p class="system-desc">济南市国有资产数字化登记、管理与盘点平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://112.230.197.174:7901/#/collection" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-landmark"></i></div>
+                                    <h4 class="system-name">济南市国资监管平台</h4>
+                                </div>
+                                <p class="system-desc">济南市国有资产监督管理综合平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://60.208.85.93:5200/platform/runtime/sys/web/index.html" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-piggy-bank"></i></div>
+                                    <h4 class="system-name">山东省金融伙伴系统</h4>
+                                </div>
+                                <p class="system-desc">省级金融机构与企业对接服务综合管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://jrfdy.dfjrjgj.shandong.gov.cn/shandong/#/home" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="planning">
+                        <div class="dept-header">
+                            <div class="dept-icon">
+                                <i class="fa fa-map"></i>
+                            </div>
+                            <div>
+                                <h3 class="dept-title">规划和自然资源部</h3>
+                                <p class="dept-desc">负责城乡规划、土地管理、自然资源利用等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                    </div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-map-marked-alt"></i></div>
+                                    <h4 class="system-name">先行区规划"一张蓝图"系统</h4>
+                                </div>
+                                <p class="system-desc">落实国家大数据战略，基于先行区"多规合一"的空间共管规划信息化工作。</p>
+                                <div class="system-ops">
+                                    <a href="http://202.110.200.114/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="miit">
+                        <div class="dept-header">
+                            <div class="dept-icon">
+                                <i class="fa fa-microchip"></i>
+                            </div>
+                            <div>
+                                <h3 class="dept-title">工信部</h3>
+                                <p class="dept-desc">负责工业、信息化、通信等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                    </div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="construction">
+                        <div class="dept-header">
+                            <div class="dept-icon"><i class="fa fa-hard-hat"></i></div>
+                            <div>
+                                <h3 class="dept-title">建设管理部</h3>
+                                <p class="dept-desc">负责工程建设、市政设施、住房保障等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tachometer-alt"></i></div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-project-diagram"></i></div>
+                                    <h4 class="system-name">起步区建设项目综合管理平台</h4>
+                                </div>
+                                <p class="system-desc">起步区工程建设项目全生命周期的数据汇集和项目标准化管理。</p>
+                                <div class="system-ops">
+                                    <a href="http://60.208.85.78:20600" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tree"></i></div>
+                                    <h4 class="system-name">林业工作站数据填报</h4>
+                                </div>
+                                <p class="system-desc">国家统建林业工作站基础数据统计与填报管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://lyz.forestry.gov.cn/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-leaf"></i></div>
+                                    <h4 class="system-name">济南市古树名木系统</h4>
+                                </div>
+                                <p class="system-desc">济南市古树名木信息登记、动态监管与保护平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://119.164.253.207:8183/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-chart-bar"></i></div>
+                                    <h4 class="system-name">全国林业草原综合统计管理系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建林业草原资源综合统计数据管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://lczhtj.forestry.gov.cn" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-bug"></i></div>
+                                    <h4 class="system-name">林业有害生物防治信息管理系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建林业有害生物监测、预报与防治管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://os.bdpc.org.cn" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-apple-alt"></i></div>
+                                    <h4 class="system-name">食用林产品质量安全系统</h4>
+                                </div>
+                                <p class="system-desc">济南市食用林产品质量安全监管与追溯管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://jnly.snzfnm.com/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-seedling"></i></div>
+                                    <h4 class="system-name">义务植树网站</h4>
+                                </div>
+                                <p class="system-desc">国家统建义务植树活动组织、报名与管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://www.yiwuzhishu.cn/manage.php/Public/login.html" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tree"></i></div>
+                                    <h4 class="system-name">林长制平台</h4>
+                                </div>
+                                <p class="system-desc">国家统建林长制工作推进、督查与考核管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://117.73.255.2:18866/work-platform/login?redirect=%2F" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-shield-alt"></i></div>
+                                    <h4 class="system-name">全国林草植物检疫信息化管理与服务平台</h4>
+                                </div>
+                                <p class="system-desc">国家统建林草植物检疫审批与信息化服务管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://pq.bdpc.org.cn" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-money-check-alt"></i></div>
+                                    <h4 class="system-name">自然资源资金监管系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建自然资源相关资金使用与监管信息平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://219.142.70.234/zj" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-spa"></i></div>
+                                    <h4 class="system-name">林草种苗</h4>
+                                </div>
+                                <p class="system-desc">国家统建林草种苗生产、经营与质量监管信息平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://www.forestry.gov.cn/ywxt.html?service=http://124.205.185.91/lmzm/Account" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-cut"></i></div>
+                                    <h4 class="system-name">绿化养护管理系统</h4>
+                                </div>
+                                <p class="system-desc">济南市城市绿化养护作业管理与考核平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://124.128.155.241/system/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-water"></i></div>
+                                    <h4 class="system-name">济南市水务局河湖管理第三方巡查管理平台</h4>
+                                </div>
+                                <p class="system-desc">济南市河湖第三方巡查任务管理与问题跟踪平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://39.100.77.115:6500/login.aspx" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tint"></i></div>
+                                    <h4 class="system-name">山东省河湖长制管理信息系统</h4>
+                                </div>
+                                <p class="system-desc">省级河湖长制工作推进、巡查与考核管理信息平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://60.208.113.77:8081/sdhzsys/system/login/login.jsp" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-satellite"></i></div>
+                                    <h4 class="system-name">济南市市级卫片监测系统</h4>
+                                </div>
+                                <p class="system-desc">济南市卫星遥感影像变化监测与土地违法查处平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://124.128.33.20:8083/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-hard-hat"></i></div>
+                                    <h4 class="system-name">水利安全生产监管信息系统</h4>
+                                </div>
+                                <p class="system-desc">济南市水利工程安全生产监管与隐患排查治理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://jdcj.mwr.cn:7080/cjfw/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-drafting-compass"></i></div>
+                                    <h4 class="system-name">济南市数字化联合审图系统</h4>
+                                </div>
+                                <p class="system-desc">济南市建设工程施工图数字化联合审查管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://sd.shaniaoyun.com/jinan/index.html" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-building"></i></div>
+                                    <h4 class="system-name">济南市智慧物业管理服务平台</h4>
+                                </div>
+                                <p class="system-desc">济南市物业服务企业监管与住宅小区管理信息平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://124.128.226.240:8087/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="social-affairs">
+                        <div class="dept-header">
+                            <div class="dept-icon"><i class="fa fa-heart"></i></div>
+                            <div>
+                                <h3 class="dept-title">社会事业部</h3>
+                                <p class="dept-desc">负责教育、医疗、社保、民政等社会事业相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tachometer-alt"></i></div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-graduation-cap"></i></div>
+                                    <h4 class="system-name">山东省基础教育管理信息化平台</h4>
+                                </div>
+                                <p class="system-desc">省级基础教育学校、学生及教育质量综合管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://sdbe.sdei.edu.cn/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-chalkboard-teacher"></i></div>
+                                    <h4 class="system-name">山东省教师队伍建设管理平台</h4>
+                                </div>
+                                <p class="system-desc">省级教师资格认定、职称评定与队伍建设管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://jsgl.sdei.edu.cn/jsdwjs/login.htm" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-user-tie"></i></div>
+                                    <h4 class="system-name">山东省专业技术人员管理服务平台</h4>
+                                </div>
+                                <p class="system-desc">省级专业技术人员职称申报、评审与继续教育管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://117.73.253.239:9000/sdzc-web-ui/business/ww/tzgg_articlePage.html?articleType=01" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-child"></i></div>
+                                    <h4 class="system-name">全国学前教育管理信息系统（山东省）</h4>
+                                </div>
+                                <p class="system-desc">国家统建学前教育机构、师资与幼儿信息管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://xqjycas.sdei.edu.cn:91/cas/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-school"></i></div>
+                                    <h4 class="system-name">全国基础教育管理服务平台</h4>
+                                </div>
+                                <p class="system-desc">国家统建基础教育学校资质、师生信息管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://zxxs.moe.edu.cn/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-lock"></i></div>
+                                    <h4 class="system-name">山东省学校安全管理系统</h4>
+                                </div>
+                                <p class="system-desc">省级学校安全隐患排查、事故报告与风险防控平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://sdxxaq.sdei.edu.cn/education/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-camera"></i></div>
+                                    <h4 class="system-name">山东"双减"举报随手拍</h4>
+                                </div>
+                                <p class="system-desc">省级"双减"政策落实情况社会举报与监督平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://dredu.sdetv.com.cn/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-minus-circle"></i></div>
+                                    <h4 class="system-name">双减工作情况调度平台</h4>
+                                </div>
+                                <p class="system-desc">省级"双减"工作推进情况数据填报与调度管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://xwjg.sdei.edu.cn/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-heartbeat"></i></div>
+                                    <h4 class="system-name">青少年健康数据管理系统</h4>
+                                </div>
+                                <p class="system-desc">省级青少年健康体检数据采集与综合管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://www.qshnhealth.com/portal/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-hand-holding-heart"></i></div>
+                                    <h4 class="system-name">全国慈善信息公开平台</h4>
+                                </div>
+                                <p class="system-desc">国家统建慈善组织信息公开、年报与监督管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://cszg.mca.gov.cn/platform/login.html" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-list-alt"></i></div>
+                                    <h4 class="system-name">山东省政务服务事项标准化梳理和管理系统</h4>
+                                </div>
+                                <p class="system-desc">省级政务服务事项标准化梳理与目录管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://120.221.154.220:8088/qlk-web" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-map-marked-alt"></i></div>
+                                    <h4 class="system-name">山东省行政区域界线界桩管理平台</h4>
+                                </div>
+                                <p class="system-desc">省级行政区域界线界桩信息动态管理与维护平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://124.128.48.211:8888/MZT/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-globe-asia"></i></div>
+                                    <h4 class="system-name">中国国家地名信息库</h4>
+                                </div>
+                                <p class="system-desc">国家统建地名标准化管理与地名信息共享服务平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://dmgl.mca.gov.cn/Pages/Index.html" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-wheelchair"></i></div>
+                                    <h4 class="system-name">济南市残联信息化平台（智慧残联）</h4>
+                                </div>
+                                <p class="system-desc">济南市残疾人服务管理与智慧残联综合信息平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://zhcl.jinandpf.cn/home/index.html#/home" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-hands-helping"></i></div>
+                                    <h4 class="system-name">山东省残疾人工作平台</h4>
+                                </div>
+                                <p class="system-desc">省级残疾人基本公共服务与工作管理综合平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://manage.sddpf.org.cn/clzt/a/index" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-universal-access"></i></div>
+                                    <h4 class="system-name">全国残联信息化服务平台</h4>
+                                </div>
+                                <p class="system-desc">国家统建残疾人服务信息化综合管理与服务平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://portal.cdpf.org.cn" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-user-clock"></i></div>
+                                    <h4 class="system-name">济南市养老服务综合管理平台</h4>
+                                </div>
+                                <p class="system-desc">济南市养老机构、服务补贴与老年人信息综合管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://jnmz.jinan.gov.cn/jnmz/jgpt/#/portalNew" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-video"></i></div>
+                                    <h4 class="system-name">济南市民政局养老机构视频监管平台</h4>
+                                </div>
+                                <p class="system-desc">济南市养老机构实时视频监控与安全管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://221.214.8.70:8901/mz/#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-home"></i></div>
+                                    <h4 class="system-name">济南市居家养老服务信息平台</h4>
+                                </div>
+                                <p class="system-desc">济南市居家养老服务派单、监管与评价管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://jinan.tianyucare.com/jnHomeserviceCenter/#/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-hospital"></i></div>
+                                    <h4 class="system-name">国家卫生统计信息网络直报系统</h4>
+                                </div>
+                                <p class="system-desc">省级卫生统计信息数据采集、汇总与直报管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://www.sdwstj.org/webPage/esmain/portal/loginportal.do?portalid=DLnew_copy" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-pills"></i></div>
+                                    <h4 class="system-name">免费提供避孕药具服务管理业务信息系统</h4>
+                                </div>
+                                <p class="system-desc">省级免费避孕药具采购、分发与管理信息平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://mftgyj.yjglzx.org.cn/system/login.html" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-medkit"></i></div>
+                                    <h4 class="system-name">济南市学校卫生综合管理平台</h4>
+                                </div>
+                                <p class="system-desc">济南市学校卫生健康状况监测与综合管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://124.128.226.239:5189/login?redirect=%2F" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-stethoscope"></i></div>
+                                    <h4 class="system-name">山东省学生常见病监测数据管理平台</h4>
+                                </div>
+                                <p class="system-desc">省级学生近视、肥胖等常见病监测与数据管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="http://121.36.16.157:8081/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-utensils"></i></div>
+                                    <h4 class="system-name">全民健康保障食品安全风险评估业务应用平台</h4>
+                                </div>
+                                <p class="system-desc">国家统建食品安全风险监测与评估业务管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://sppt.cfsa.net.cn/goto/blogin" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-lungs"></i></div>
+                                    <h4 class="system-name">工作场所职业病危害因素监测系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建职业病危害因素日常监测与管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://www.zybwhsb.com/" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dept-container" id="law-enforcement">
+                        <div class="dept-header">
+                            <div class="dept-icon"><i class="fa fa-gavel"></i></div>
+                            <div>
+                                <h3 class="dept-title">综合执法部</h3>
+                                <p class="dept-desc">负责综合行政执法、违法查处、执法监督等相关工作及系统管理</p>
+                            </div>
+                        </div>
+                        <div class="system-grid">
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-tachometer-alt"></i></div>
+                                    <h4 class="system-name">民意速办平台</h4>
+                                </div>
+                                <p class="system-desc">实时汇聚民意诉求，快速响应办理，支持诉求全流程跟踪督办。</p>
+                                <div class="system-ops">
+                                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-eye"></i></div>
+                                    <h4 class="system-name">视联网能力平台</h4>
+                                </div>
+                                <p class="system-desc">AI识别与预警、非现场远程巡查管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://ipvs.slwunicom.com:14433/console/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-city"></i></div>
+                                    <h4 class="system-name">起步区智慧城管系统</h4>
+                                </div>
+                                <p class="system-desc">生活垃圾分类、建筑垃圾监管、智慧环卫监管、智慧市政监管、园林水域监管、户外广告监管。</p>
+                                <div class="system-ops">
+                                    <a href="https://www.jnqbqzhcg.com:7777/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-gavel"></i></div>
+                                    <h4 class="system-name">起步区智慧执法系统</h4>
+                                </div>
+                                <p class="system-desc">精细化综合执法数据采集、AI分析及统一数据处理中心服务。</p>
+                                <div class="system-ops">
+                                    <a href="https://www.qbqzhzf.site:8082/login?redirect=%2Fhome" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-recycle"></i></div>
+                                    <h4 class="system-name">志愿者管理平台</h4>
+                                </div>
+                                <p class="system-desc">国家统建垃圾分类志愿者注册、组织与服务管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://flzyx.hifenlei.com/index.html?redirect_url=%2FrecycleVolunteerService%2Fvolunteer%2Fteam#/login" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                            <!-- <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-capsules"></i></div>
+                                    <h4 class="system-name">山东省药品监督管理局日常监管系统</h4>
+                                </div>
+                                <p class="system-desc">省级药品、医疗器械日常监督检查与执法管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://124.128.39.248:9020/portal/jsp/public/login.jsp" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div> -->
+                            <div class="system-card">
+                                <div class="system-card-header">
+                                    <div class="system-icon"><i class="fa fa-chart-pie"></i></div>
+                                    <h4 class="system-name">国家药品监督管理统计信息系统</h4>
+                                </div>
+                                <p class="system-desc">国家统建药品监管统计数据填报与汇总管理平台。</p>
+                                <div class="system-ops">
+                                    <a href="https://yjtj.nmpa.gov.cn:8001/yj/esmain/portal/loginportal.do" class="btn btn-primary" target="_blank">立即访问</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部（复用） -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-col">
+                    <h3>平台导航</h3>
+                    <ul>
+                        <li>首页</li>
+                        <li>AI办公</li>
+                        <li>政务办公</li>
+                        <li>数字大脑</li>
+                        <li>政策通知</li>
+                        <li>办公助手</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>常用服务</h3>
+                    <ul>
+                        <li>民意速办平台</li>
+                        <li>数据填报平台</li>
+                        <li>视频监控平台</li>
+                        <li>AI公文写作</li>
+                        <li>公文模板库</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>部门入口</h3>
+                    <ul>
+                        <li>数字城市部</li>
+                        <li>办公室</li>
+                        <li>党群工作部</li>
+                        <li>宣传文化部</li>
+                        <li>社会治理部</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li>技术支持：0531-66604396</li>
+                        <li>工作时间：9:00-17:00</li>
+                        <li>地址：起步区管委会城市运营指挥中心</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 政务内部统一办公门户 版权所有 | 京ICP备12345678号-1</p>
+                <p>技术支持：政务信息化建设中心</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 功能开发中弹窗 -->
+    <div class="developing-overlay" id="developingOverlay">
+        <div class="developing-box">
+            <div class="developing-icon"><i class="fa fa-gears"></i></div>
+            <h2 class="developing-title">功能正在开发中</h2>
+            <p class="developing-desc">该模块正在紧张开发与优化中，敬请期待！<br>如需了解更多开发进度，可联系技术支持人员。</p>
+            <a href="javascript:void(0)" class="btn btn-primary" onclick="document.getElementById('developingOverlay').style.display='none'">确定</a>
+        </div>
+    </div>
+
+    <!-- 智能问答机器人 -->
+    <div class="ai-chatbot">
+        <div class="chatbot-toggle" id="chatbotToggle">
+            <i class="fa fa-robot"></i>
+        </div>
+        <div class="chatbot-panel" id="chatbotPanel">
+            <div class="chatbot-header">
+                <div class="chatbot-title">智能问答助手</div>
+                <div class="chatbot-close" id="chatbotClose">×</div>
+            </div>
+            <div class="chatbot-body" id="chatbotBody">
+                <div class="chat-message bot">
+                    <div class="message-content">
+                        您好！我是智能问答助手，有什么可以帮助您的？
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" class="chatbot-input" id="chatbotInput" placeholder="请输入您的问题...">
+                <button class="chatbot-send" id="chatbotSend"><i class="fa fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 部门切换JS（逻辑不变） -->
+    <script>
+        // 获取所有部门导航项和内容容器
+        const deptItems = document.querySelectorAll('.dept-sidebar-item');
+        const deptContainers = document.querySelectorAll('.dept-container');
+
+        // 为每个导航项添加点击事件
+        deptItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // 移除所有导航项的active类
+                deptItems.forEach(i => i.classList.remove('active'));
+                // 给当前点击的导航项添加active类
+                item.classList.add('active');
+
+                // 获取当前部门标识
+                const deptId = item.getAttribute('data-dept');
+                
+                // 隐藏所有部门内容
+                deptContainers.forEach(container => {
+                    container.classList.remove('active');
+                });
+                
+                // 显示对应部门内容
+                document.getElementById(deptId).classList.add('active');
+            });
+        });
+
+        // 智能问答机器人功能
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotPanel = document.getElementById('chatbotPanel');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const chatbotBody = document.getElementById('chatbotBody');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSend = document.getElementById('chatbotSend');
+
+        // 切换机器人面板显示/隐藏
+        chatbotToggle.addEventListener('click', function() {
+            chatbotPanel.classList.toggle('show');
+        });
+
+        // 关闭机器人面板
+        chatbotClose.addEventListener('click', function() {
+            chatbotPanel.classList.remove('show');
+        });
+
+        // 发送消息
+        function sendMessage() {
+            const message = chatbotInput.value.trim();
+            if (message) {
+                // 添加用户消息
+                addMessage('user', message);
+                chatbotInput.value = '';
+
+                // 模拟机器人回复
+                setTimeout(() => {
+                    const reply = getBotReply(message);
+                    addMessage('bot', reply);
+                }, 500);
+            }
+        }
+
+        // 添加消息到聊天窗口
+        function addMessage(type, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${content}
+                </div>
+            `;
+            chatbotBody.appendChild(messageDiv);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        // 简单的机器人回复逻辑
+        function getBotReply(message) {
+            message = message.toLowerCase();
+            
+            if (message.includes('你好') || message.includes('您好') || message.includes('hi') || message.includes('hello')) {
+                return '您好！我是政务智能问答助手，很高兴为您服务。';
+            } else if (message.includes('用印') || message.includes('盖章')) {
+                return '您可以在办公助手页面下载用印申请模板，或者直接访问政务办公系统进行用印申请。';
+            } else if (message.includes('发文') || message.includes('公文')) {
+                return '您可以在办公助手页面下载发文模板，或者使用AI办公中的公文写作工具生成公文。';
+            } else if (message.includes('logo') || message.includes('图片')) {
+                return '您可以在办公助手页面的常用图片素材 section 下载区内LOGO和其他常用图片。';
+            } else if (message.includes('ppt') || message.includes('模板')) {
+                return '您可以在办公助手页面下载各种PPT模板，包括党建、工作汇报等类型。';
+            } else if (message.includes('政策') || message.includes('通知')) {
+                return '您可以在政策通知页面查看最新的政策文件和通知公告。';
+            } else if (message.includes('系统') || message.includes('平台')) {
+                return '您可以在政务办公页面访问各个部门的业务系统，或者在首页的常用系统 section 快速访问常用系统。';
+            } else if (message.includes('数字大脑')) {
+                return '数字大脑页面展示了部门一张图和街办分中心的可视化数据，助力政务决策。';
+            } else if (message.includes('ai办公') || message.includes('智能办公')) {
+                return 'AI办公页面提供了AI公文写作、公文模板库、AI知识库等智能工具，提升办公效率。';
+            } else if (message.includes('帮助') || message.includes('指南')) {
+                return '您可以在各个页面的帮助中心获取使用指南，或者直接向我咨询具体问题。';
+            } else {
+                return '抱歉，我暂时无法回答这个问题。您可以尝试换一种方式提问，或者联系技术支持获取帮助。';
+            }
+        }
+
+        // 发送按钮点击事件
+        chatbotSend.addEventListener('click', sendMessage);
+
+        // 回车键发送消息
+        chatbotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // 暂无连接弹窗逻辑：拦截所有 href="#" 的"立即访问"按钮
+        document.querySelectorAll('.btn-primary[href="#"]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('developingOverlay').style.display = 'flex';
+            });
+        });
+    </script>
+</body>
+</html>

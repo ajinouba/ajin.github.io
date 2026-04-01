@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字大脑 - 起步区数字统一门户</title>
+    <style>
+        /* 复用全局基础样式（和首页/政务办公页面一致） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #005ea5;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #004a87;
+        }
+
+        /* 小程序二维码样式（复用） */
+        .mini-program {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .mini-program-trigger {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .mini-program-trigger:hover {
+            background-color: #004a87;
+            transform: scale(1.05);
+        }
+
+        .mini-program-content {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            display: none;
+            width: 180px;
+            text-align: center;
+        }
+
+        .mini-program:hover .mini-program-content {
+            display: block;
+        }
+
+        .mini-program-qrcode {
+            width: 150px;
+            height: 150px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .mini-program-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* 顶部导航（复用，数字大脑页面标记为active） */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        /* 全局搜索样式 */
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #005ea5;
+            box-shadow: 0 0 0 2px rgba(0, 94, 165, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #005ea5;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #004a87;
+        }
+
+        /* 智能问答机器人样式 */
+        .ai-chatbot {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 9999;
+        }
+
+        .chatbot-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 94, 165, 0.3);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .chatbot-toggle:hover {
+            background-color: #004a87;
+            transform: scale(1.1);
+        }
+
+        .chatbot-panel {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            width: 320px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: none;
+        }
+
+        .chatbot-panel.show {
+            display: block;
+        }
+
+        .chatbot-header {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chatbot-close {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+
+        .chat-message.bot {
+            justify-content: flex-start;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+
+        .bot .message-content {
+            background-color: #f0f7ff;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user .message-content {
+            background-color: #005ea5;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chatbot-input-area {
+            border-top: 1px solid #f0f2f5;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chatbot-send {
+            background-color: #005ea5;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chatbot-send:hover {
+            background-color: #004a87;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #005ea5;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            color: #005ea5;
+        }
+
+        .header-nav {
+            padding: 0;
+        }
+
+        .nav-list {
+            display: flex;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-item:hover {
+            color: #005ea5;
+        }
+
+        .nav-item.active {
+            color: #005ea5;
+            border-bottom: 3px solid #005ea5;
+        }
+
+        /* 页面标题区（复用） */
+        .page-header {
+            background-color: #e6f4ff;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #005ea5;
+            margin-bottom: 10px;
+        }
+
+        .page-desc {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* 通用区块样式（复用） */
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #005ea5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #005ea5;
+            font-size: 20px;
+        }
+
+        /* 轮播图核心样式 */
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 18px;
+        }
+
+        /* 轮播图控制按钮 */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 94, 165, 0.7);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background-color: #005ea5;
+        }
+
+        .carousel-prev {
+            left: 20px;
+        }
+
+        .carousel-next {
+            right: 20px;
+        }
+
+        /* 轮播图指示器 */
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-indicator.active {
+            background-color: #005ea5;
+            width: 24px;
+            border-radius: 6px;
+        }
+
+        /* 轮播图内容文字 */
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: #fff;
+        }
+
+        .carousel-caption h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .carousel-caption p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 底部样式（复用） */
+        .footer {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-col h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-col ul {
+            font-size: 13px;
+        }
+
+        .footer-col li {
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .footer-col li:hover {
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 0;
+            }
+
+            .nav-list {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .nav-item {
+                padding: 10px 15px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .page-desc {
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            /* 轮播图响应式 */
+            .carousel {
+                height: 280px;
+            }
+
+            .carousel-btn {
+                width: 30px;
+                height: 30px;
+            }
+
+            .carousel-caption h3 {
+                font-size: 16px;
+            }
+
+            .carousel-caption p {
+                font-size: 12px;
+            }
+
+            .mini-program {
+                display: none;
+            }
+        }
+    </style>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 小程序二维码入口（复用） -->
+    <div class="mini-program">
+        <div class="mini-program-trigger">
+            <i class="fa fa-qrcode"></i>
+        </div>
+        <div class="mini-program-content">
+            <div class="mini-program-qrcode">
+                <div>
+                    <i class="fa fa-qrcode" style="font-size: 40px; margin-bottom: 10px;"></i>
+                    <p>起步区接诉即办</p>
+                    <p>小程序二维码</p>
+                </div>
+            </div>
+            <div class="mini-program-name">起步区接诉即办</div>
+        </div>
+    </div>
+
+    <!-- 顶部导航（数字大脑页面标记为active） -->
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMwMDVlYTVjIi8+CjxwYXRoIGQ9Ik0yMCAxMFYzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTEwIDIwSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=" alt="政务平台logo">
+                    <div class="logo-text">起步区数字统一门户</div>
+                </div>
+                <!-- 全局搜索 -->
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索政策、系统、服务...">
+                    <button class="search-btn"><i class="fa fa-search"></i></button>
+                </div>
+                <div class="user-area">
+                    <div class="user-info">
+                        <div class="user-avatar"><i class="fa fa-user"></i></div>
+                        <span>政务管理员</span>
+                    </div>
+                    <div class="logout-btn" id="logout-btn"><i class="fa fa-sign-out-alt"></i> 退出登录</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="./统一办公2.html">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./ai办公.html">AI办公</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./政务办公.html">政务办公</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="./数字大脑.html">数字大脑</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./政策通知.html">政策通知</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./办公助手.html">办公助手</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题区 -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">数字大脑可视化平台</h1>
+            <p class="page-desc">集中展示部门一张图、街办分中心等可视化数据，助力政务决策</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- 部门一张图轮播区 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-sitemap"></i>
+                部门一张图
+            </h2>
+            
+            <div class="carousel" id="dept-carousel">
+                <div class="carousel-wrapper">
+                    <!-- 轮播图1  -->
+                     <div class="carousel-slide active">
+                     <img src="imagine/政务服务.png" alt="政务服务一张图" class="carousel-img">
+                     <div class="carousel-caption">
+                            </div>
+                        <div class="carousel-caption">
+                            <h3>数字城市一张图</h3>
+                            <p>整合城市运行、物联网、数据中台等多维度数据，实现部门业务全景可视化</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 轮播图2 -->
+                     <div class="carousel-slide active">
+                     <img src="imagine/数字城市.png" alt="政务服务一张图" class="carousel-img">
+                     <div class="carousel-caption">
+                        </div>
+                        <div class="carousel-caption">
+                            <h3>政务服务部一张图</h3>
+                            <p>整合办件量、满意度、事项办理时长等数据，实现政务服务效能可视化</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 轮播图3 -->
+                   <div class="carousel-slide active">
+                     <a href="https://szmp.jnqbqzhcs.com:8500/goverment" target="_blank">
+                     <img src="imagine/经济运行.png" alt="数字城市部一张图" class="carousel-img">
+                     </a>
+                     <div class="carousel-caption">
+                     <h3><a href="https://szmp.jnqbqzhcs.com:8500/goverment" target="_blank" style="color:inherit;text-decoration:none;">数字城市部一张图</a></h3>
+                     <p>整合城市运行、物联网、数据中台等多维度数据...</p>
+                     </div>
+                    </div>
+                
+                <!-- 轮播控制按钮 -->
+                <button class="carousel-btn carousel-prev">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn carousel-next">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+                
+                <!-- 轮播指示器 -->
+                <div class="carousel-indicators">
+                    <div class="carousel-indicator active" data-index="0"></div>
+                    <div class="carousel-indicator" data-index="1"></div>
+                    <div class="carousel-indicator" data-index="2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 街办分中心轮播区 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-map-marker-alt"></i>
+                街办分中心
+            </h2>
+            
+            <div class="carousel" id="street-carousel">
+                <div class="carousel-wrapper">
+                    <!-- 轮播图1 - 与首页内容一致 -->
+                    <div class="carousel-slide active">
+                     <a href="https://szmp.jnqbqzhcs.com:8500/cityOperationTP?departCode=1710334304459" target="_blank">
+                     <img src="imagine/太平接到.png" alt="太平街办分中心一张图" class="carousel-img">
+                     </a>
+                     <div class="carousel-caption">
+                        </div>
+                        <div class="carousel-caption">
+                            <h3><a href="https://szmp.jnqbqzhcs.com:8500/cityOperationTP?departCode=1710334304459" target="_blank" style="color:inherit;text-decoration:none;">太平街办分中心</a></h3>
+                            <p>整合核心区人口、民生、治理等数据，实现街办级政务服务可视化</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 轮播图2 - 与首页内容一致 -->
+                   <div class="carousel-slide active">
+                     <a href="https://szmp.jnqbqzhcs.com:8500/cityOperation" target="_blank">
+                     <img src="imagine/孙耿街道.png" alt="孙耿街办分中心一张图" class="carousel-img">
+                     </a>
+                     <div class="carousel-caption">
+                        </div>
+                        <div class="carousel-caption">
+                            <h3><a href="https://szmp.jnqbqzhcs.com:8500/cityOperation" target="_blank" style="color:inherit;text-decoration:none;">孙耿街办分中心</a></h3>
+                            <p>整合产业区企业、就业、经济等数据，实现产业发展态势可视化</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 轮播图3 - 与首页内容一致 -->
+                      <div class="carousel-slide active">
+                     <a href="https://szmp.jnqbqzhcs.com:8500/cityOperationCZ?departCode=1710334304459" target="_blank">
+                     <img src="imagine/崔寨专题.png" alt="崔寨街办分中心一张图" class="carousel-img">
+                     </a>
+                     <div class="carousel-caption">
+                        </div>
+                        <div class="carousel-caption">
+                            <h3><a href="https://szmp.jnqbqzhcs.com:8500/cityOperationCZ?departCode=1710334304459" target="_blank" style="color:inherit;text-decoration:none;">崔寨区街办分中心</a></h3>
+                            <p>整合居住区社区、物业、民生服务等数据，实现基层治理可视化</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 轮播控制按钮 -->
+                <button class="carousel-btn carousel-prev">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn carousel-next">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+                
+                <!-- 轮播指示器 -->
+                <div class="carousel-indicators">
+                    <div class="carousel-indicator active" data-index="0"></div>
+                    <div class="carousel-indicator" data-index="1"></div>
+                    <div class="carousel-indicator" data-index="2"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部（复用） -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-col">
+                    <h3>平台导航</h3>
+                    <ul>
+                        <li>首页</li>
+                        <li>AI办公</li>
+                        <li>政务办公</li>
+                        <li>数字大脑</li>
+                        <li>政策通知</li>
+                        <li>办公助手</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>常用服务</h3>
+                    <ul>
+                        <li>民意速办平台</li>
+                        <li>数据填报平台</li>
+                        <li>视频监控平台</li>
+                        <li>AI公文写作</li>
+                        <li>公文模板库</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>部门入口</h3>
+                    <ul>
+                        <li>数字城市部</li>
+                        <li>办公室</li>
+                        <li>党群工作部</li>
+                        <li>宣传文化部</li>
+                        <li>社会治理部</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li>技术支持：0531-66604396</li>
+                        <li>工作时间：9:00-17:00</li>
+                        <li>地址：起步区管委会城市运营指挥中心</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 政务内部统一办公门户 版权所有 | 京ICP备12345678号-1</p>
+                <p>技术支持：政务信息化建设中心</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 智能问答机器人 -->
+    <div class="ai-chatbot">
+        <div class="chatbot-toggle" id="chatbotToggle">
+            <i class="fa fa-robot"></i>
+        </div>
+        <div class="chatbot-panel" id="chatbotPanel">
+            <div class="chatbot-header">
+                <div class="chatbot-title">智能问答助手</div>
+                <div class="chatbot-close" id="chatbotClose">×</div>
+            </div>
+            <div class="chatbot-body" id="chatbotBody">
+                <div class="chat-message bot">
+                    <div class="message-content">
+                        您好！我是智能问答助手，有什么可以帮助您的？
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" class="chatbot-input" id="chatbotInput" placeholder="请输入您的问题...">
+                <button class="chatbot-send" id="chatbotSend"><i class="fa fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 轮播图核心JS -->
+    <script>
+        // 轮播图初始化函数
+        function initCarousel(carouselId) {
+            // 获取轮播图元素
+            const carousel = document.getElementById(carouselId);
+            const slides = carousel.querySelectorAll('.carousel-slide');
+            const indicators = carousel.querySelectorAll('.carousel-indicator');
+            const prevBtn = carousel.querySelector('.carousel-prev');
+            const nextBtn = carousel.querySelector('.carousel-next');
+            
+            let currentIndex = 0;
+            let autoPlayInterval;
+
+            // 切换轮播图函数
+            function switchSlide(index) {
+                // 边界处理
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                
+                // 移除所有active类
+                slides.forEach(slide => slide.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                // 添加当前active类
+                slides[index].classList.add('active');
+                indicators[index].classList.add('active');
+                
+                // 更新当前索引
+                currentIndex = index;
+            }
+
+            // 上一张
+            function prevSlide() {
+                switchSlide(currentIndex - 1);
+            }
+
+            // 下一张
+            function nextSlide() {
+                switchSlide(currentIndex + 1);
+            }
+
+            // 自动播放
+            function startAutoPlay() {
+                autoPlayInterval = setInterval(() => {
+                    nextSlide();
+                }, 5000); // 5秒切换一次
+            }
+
+            // 停止自动播放
+            function stopAutoPlay() {
+                clearInterval(autoPlayInterval);
+            }
+
+            // 绑定事件
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+            
+            // 指示器点击事件
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    switchSlide(index);
+                });
+            });
+            
+            // 鼠标悬停停止自动播放
+            carousel.addEventListener('mouseenter', stopAutoPlay);
+            carousel.addEventListener('mouseleave', startAutoPlay);
+
+            // 启动自动播放
+            startAutoPlay();
+        }
+
+        // 初始化两个轮播图
+        initCarousel('dept-carousel'); // 部门一张图轮播
+        initCarousel('street-carousel'); // 街办分中心轮播
+
+        // 智能问答机器人功能
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotPanel = document.getElementById('chatbotPanel');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const chatbotBody = document.getElementById('chatbotBody');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSend = document.getElementById('chatbotSend');
+
+        // 切换机器人面板显示/隐藏
+        chatbotToggle.addEventListener('click', function() {
+            chatbotPanel.classList.toggle('show');
+        });
+
+        // 关闭机器人面板
+        chatbotClose.addEventListener('click', function() {
+            chatbotPanel.classList.remove('show');
+        });
+
+        // 发送消息
+        function sendMessage() {
+            const message = chatbotInput.value.trim();
+            if (message) {
+                // 添加用户消息
+                addMessage('user', message);
+                chatbotInput.value = '';
+
+                // 模拟机器人回复
+                setTimeout(() => {
+                    const reply = getBotReply(message);
+                    addMessage('bot', reply);
+                }, 500);
+            }
+        }
+
+        // 添加消息到聊天窗口
+        function addMessage(type, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${content}
+                </div>
+            `;
+            chatbotBody.appendChild(messageDiv);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        // 简单的机器人回复逻辑
+        function getBotReply(message) {
+            message = message.toLowerCase();
+            
+            if (message.includes('你好') || message.includes('您好') || message.includes('hi') || message.includes('hello')) {
+                return '您好！我是政务智能问答助手，很高兴为您服务。';
+            } else if (message.includes('用印') || message.includes('盖章')) {
+                return '您可以在办公助手页面下载用印申请模板，或者直接访问政务办公系统进行用印申请。';
+            } else if (message.includes('发文') || message.includes('公文')) {
+                return '您可以在办公助手页面下载发文模板，或者使用AI办公中的公文写作工具生成公文。';
+            } else if (message.includes('logo') || message.includes('图片')) {
+                return '您可以在办公助手页面的常用图片素材 section 下载区内LOGO和其他常用图片。';
+            } else if (message.includes('ppt') || message.includes('模板')) {
+                return '您可以在办公助手页面下载各种PPT模板，包括党建、工作汇报等类型。';
+            } else if (message.includes('政策') || message.includes('通知')) {
+                return '您可以在政策通知页面查看最新的政策文件和通知公告。';
+            } else if (message.includes('系统') || message.includes('平台')) {
+                return '您可以在政务办公页面访问各个部门的业务系统，或者在首页的常用系统 section 快速访问常用系统。';
+            } else if (message.includes('数字大脑')) {
+                return '数字大脑页面展示了部门一张图和街办分中心的可视化数据，助力政务决策。';
+            } else if (message.includes('ai办公') || message.includes('智能办公')) {
+                return 'AI办公页面提供了AI公文写作、公文模板库、AI知识库等智能工具，提升办公效率。';
+            } else if (message.includes('帮助') || message.includes('指南')) {
+                return '您可以在各个页面的帮助中心获取使用指南，或者直接向我咨询具体问题。';
+            } else {
+                return '抱歉，我暂时无法回答这个问题。您可以尝试换一种方式提问，或者联系技术支持获取帮助。';
+            }
+        }
+
+        // 发送按钮点击事件
+        chatbotSend.addEventListener('click', sendMessage);
+
+        // 回车键发送消息
+        chatbotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

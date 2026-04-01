@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>起步区数字统一门户</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #005ea5;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #004a87;
+        }
+
+        .btn-secondary {
+            background-color: #f0f2f5;
+            color: #333;
+            border: 1px solid #dcdfe6;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e8eaed;
+        }
+
+        /* 小程序二维码样式 - 新增 */
+        .mini-program {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .mini-program-trigger {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .mini-program-trigger:hover {
+            background-color: #004a87;
+            transform: scale(1.05);
+        }
+
+        .mini-program-content {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            display: none;
+            width: 180px;
+            text-align: center;
+        }
+
+        .mini-program:hover .mini-program-content {
+            display: block;
+        }
+
+        .mini-program-qrcode {
+            width: 150px;
+            height: 150px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .mini-program-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        /* 全局搜索样式 */
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #005ea5;
+            box-shadow: 0 0 0 2px rgba(0, 94, 165, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #005ea5;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #004a87;
+        }
+
+        /* 智能问答机器人样式 */
+        .ai-chatbot {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 9999;
+        }
+
+        .chatbot-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 94, 165, 0.3);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .chatbot-toggle:hover {
+            background-color: #004a87;
+            transform: scale(1.1);
+        }
+
+        .chatbot-panel {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            width: 320px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: none;
+        }
+
+        .chatbot-panel.show {
+            display: block;
+        }
+
+        .chatbot-header {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chatbot-close {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+
+        .chat-message.bot {
+            justify-content: flex-start;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+
+        .bot .message-content {
+            background-color: #f0f7ff;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user .message-content {
+            background-color: #005ea5;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chatbot-input-area {
+            border-top: 1px solid #f0f2f5;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chatbot-send {
+            background-color: #005ea5;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chatbot-send:hover {
+            background-color: #004a87;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #005ea5;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            color: #005ea5;
+        }
+
+        .header-nav {
+            padding: 0;
+        }
+
+        .nav-list {
+            display: flex;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-item:hover {
+            color: #005ea5;
+        }
+
+        .nav-item.active {
+            color: #005ea5;
+            border-bottom: 3px solid #005ea5;
+        }
+
+        /* 轮播图 - 使用去文字后的banner图 */
+        .banner {
+            height: 300px;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 新增：通过滤镜弱化图片文字，或直接替换去文字后的图片 */
+            filter: brightness(1.05) contrast(1.05);
+        }
+
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color:#e6f4ff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .banner-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .banner-desc {
+            font-size: 16px;
+        }
+
+        /* 功能专区 */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #005ea5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #005ea5;
+            font-size: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            transition: all 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #e6f4ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #005ea5;
+        }
+
+        .card-content {
+            flex: 1;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .card-footer {
+            text-align: right;
+        }
+
+        .more-link {
+            color: #005ea5;
+            font-weight: 500;
+        }
+
+        /* AI办公工具区 */
+        .ai-tools {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ai-tool {
+            flex: 1;
+            min-width: 250px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .tool-icon {
+            font-size: 40px;
+            color: #005ea5;
+            margin-bottom: 15px;
+        }
+
+        .tool-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tool-desc {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* 部门应用入口 - 优化展示样式 */
+        .dept-apps {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            width: 100%;
+        }
+
+        .dept-tabs {
+            display: flex;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .dept-tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .dept-tab.active {
+            color: #005ea5;
+            border-bottom-color: #005ea5;
+        }
+
+        /* 全局滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f0f2f5;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c0cdd8;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #005ea5;
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* 核心优化：增大列宽及间距，充满整行 */
+        .app-list {
+            display: grid;
+            /* 调整列宽：最小宽度增大到180px，自动填充整行 */
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            /* 增大间距：从20px调整到30px */
+            gap: 30px;
+            /* 确保充满整行 */
+            width: 100%;
+            max-height: 345px;
+            overflow: hidden;
+        }
+
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 15px; /* 增大内边距 */
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            height: 150px; /* 增大高度 */
+            background-color: #f8f9fa;
+            width: 100%; /* 确保每个项目充满列宽 */
+        }
+
+        .app-item.more-item {
+            background-color: #f8f9fa;
+            border: 2px solid #005ea5;
+        }
+
+        .app-item.more-item .app-icon {
+            background-color: #005ea5;
+            color: #fff;
+        }
+
+        .app-item.more-item:hover {
+            background-color: #005ea5;
+        }
+
+        .app-item.more-item:hover .app-icon {
+            background-color: #fff;
+            color: #005ea5;
+        }
+
+        .app-item.more-item:hover .app-name {
+            color: #fff;
+        }
+
+        .app-item a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .app-item:hover {
+            background-color: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .app-icon {
+            width: 60px; /* 增大图标尺寸 */
+            height: 60px;
+            background-color: #e6f4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 28px; /* 增大图标字体 */
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        .app-name {
+            font-size: 14px; /* 增大文字尺寸 */
+            text-align: center;
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* 政策通知区 - 恢复原始样式 */
+        .policy-list {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+
+        .policy-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .policy-item:last-child {
+            border-bottom: none;
+        }
+
+        .policy-item a {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+
+        .policy-title {
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .policy-item:hover .policy-title {
+            color: #005ea5;
+        }
+
+        .policy-date {
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* 常用系统 */
+        .common-systems {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .system-item {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .system-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .system-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .system-icon {
+            font-size: 24px;
+            color: #005ea5;
+            margin-bottom: 8px;
+        }
+
+        .system-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* 数字大脑图片轮播 */
+        .brain-carousel {
+            position: relative;
+            height: 300px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-slide .slide-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: #fff;
+        }
+
+        .carousel-slide .slide-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .carousel-slide .slide-desc {
+            font-size: 14px;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .indicator-dot.active {
+            background-color: #fff;
+            transform: scale(1.2);
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 10;
+            padding: 0 15px;
+        }
+
+        .carousel-control {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-control:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* 底部信息 */
+        .footer {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-col h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-col ul {
+            font-size: 13px;
+        }
+
+        .footer-col li {
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .footer-col li:hover {
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 正在开发中弹窗样式 */
+        .developing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .developing-box {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 60px 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        .developing-icon {
+            font-size: 70px;
+            color: #005ea5;
+            margin-bottom: 25px;
+            opacity: 0.8;
+        }
+        .developing-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .developing-desc {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 0;
+            }
+
+            .nav-list {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .nav-item {
+                padding: 10px 15px;
+            }
+
+            .banner {
+                height: 200px;
+            }
+
+            .banner-title {
+                font-size: 20px;
+            }
+
+            .banner-desc {
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .common-systems {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .brain-carousel {
+                height: 200px;
+            }
+            
+            /* 移动端适配优化后的应用列表 */
+            .app-list {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .app-item {
+                height: 120px;
+                padding: 20px 10px;
+            }
+            
+            .app-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            /* 移动端隐藏小程序入口，或调整位置 */
+            .mini-program {
+                display: none;
+            }
+        }
+    </style>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 小程序二维码入口 - 新增 -->
+    <div class="mini-program">
+        <div class="mini-program-trigger">
+            <i class="fa fa-qrcode"></i>
+        </div>
+        <div class="mini-program-content">
+            <div class="mini-program-qrcode">
+                <div>
+                    <i class="fa fa-qrcode" style="font-size: 40px; margin-bottom: 10px;"></i>
+                    <p>起步区接诉即办</p>
+                    <p>小程序二维码</p>
+                </div>
+            </div>
+            <div class="mini-program-name">起步区接诉即办</div>
+        </div>
+    </div>
+
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMwMDVlYTVjIi8+CjxwYXRoIGQ9Ik0yMCAxMFYzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTEwIDIwSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=" alt="政务平台logo">
+                    <div class="logo-text">起步区数字统一门户</div>
+                </div>
+                <!-- 全局搜索 -->
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索政策、系统、服务...">
+                    <button class="search-btn"><i class="fa fa-search"></i></button>
+                </div>
+                <div class="user-area">
+                    <div class="user-info">
+                        <div class="user-avatar"><i class="fa fa-user"></i></div>
+                        <span>政务管理员</span>
+                         <i class="fa-solid fa-envelope email-icon" title="查看邮箱"></i>
+                    </div>
+                    <div class="logout-btn" id="logout-btn"><i class="fa fa-sign-out-alt"></i> 退出登录</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <ul class="nav-list">
+                    <li class="nav-item active">
+                        <a href="统一办公2.html">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./ai办公.html">AI办公</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./政务办公.html">政务办公</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./数字大脑.html">数字大脑</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./政策通知.html">政策通知</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./办公助手.html">办公助手</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 轮播图 - 使用去文字后的banner图 -->
+    <div class="banner">
+        <!-- 替换为去文字后的图片地址，这里先使用处理后的样式，实际替换为去文字的图片URL -->
+        <img src="http://jnxxq.jinan.gov.cn/images/15473/banner.png" alt="政务内部办公banner" class="banner-img">
+        <div class="banner-text">
+            <h2 class="banner-title">起步区数字统一门户</h2>
+            <p class="banner-desc">智能办公 · 高效管理 · 数据驱动</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- 常用系统 -->
+        <!-- <div class="section">
+            <h2 class="section-title">
+                <i class="fa fa-server"></i>
+                常用系统
+            </h2>
+            <div class="common-systems">
+                <div class="system-item">
+                    <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                        <div class="system-icon"><i class="fa fa-comments"></i></div>
+                        <div class="system-name">民意速办平台</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./vehicle-cloud.html">
+                        <div class="system-icon"><i class="fa fa-car"></i></div>
+                        <div class="system-name">车路云一体化平台</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./street-center.html">
+                        <div class="system-icon"><i class="fa fa-building"></i></div>
+                        <div class="system-name">街办分中心</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./ideal-community.html">
+                        <div class="system-icon"><i class="fa fa-home"></i></div>
+                        <div class="system-name">理想社区</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./data-report.html">
+                        <div class="system-icon"><i class="fa fa-file-excel"></i></div>
+                        <div class="system-name">数据填报平台</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./video-monitor.html">
+                        <div class="system-icon"><i class="fa fa-video"></i></div>
+                        <div class="system-name">视频监控平台</div>
+                    </a>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- AI办公工具专区 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-robot"></i>
+                AI办公服务
+            </h2>
+            <div class="ai-tools">
+                  <div class="ai-tool">
+                    <i class="fa fa-book tool-icon"></i>
+                    <h3 class="tool-title">AI知识库</h3>
+                    <p class="tool-desc">政务相关政策法规、业务知识智能查询</p>
+                    <a href="https://account.fangcloud.com/login_v3?redirect=https%3A%2F%2Fv2.fangcloud.com%2Fhub-web%2Fkbase-web%2Fv4%2Faikbase%3Fkbase%3D%252Fkbase-web%252Fv4%252Faikbase" class="btn btn-primary" target="_blank">进入知识库</a>
+                </div>
+                <div class="ai-tool">
+                    <i class="fa fa-file-alt tool-icon"></i>
+                    <h3 class="tool-title">AI公文写作</h3>
+                    <p class="tool-desc">智能生成规范政务公文，支持多种公文类型</p>
+                    <a href="./ai办公.html" class="btn btn-primary">立即使用</a>
+                </div>
+                <div class="ai-tool">
+                    <i class="fa fa-clone tool-icon"></i>
+                    <h3 class="tool-title">公文模板库</h3>
+                    <p class="tool-desc">海量政务公文模板，一键套用，规范高效</p>
+                    <a href="./template-library.html" class="btn btn-primary">查看模板</a>
+                </div>
+              
+            </div>
+        </section>
+
+        <!-- 部门应用入口 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-link"></i>
+                部门应用入口
+            </h2>
+            <div class="dept-apps">
+                <div class="dept-tabs">
+                    <div class="dept-tab active" data-dept="digital-city">数字城市部</div>
+                    <div class="dept-tab" data-dept="office">办公室</div>
+                    <div class="dept-tab" data-dept="party-work">党群工作部</div>
+                    <div class="dept-tab" data-dept="propaganda">宣传文化部</div>
+                    <div class="dept-tab" data-dept="social-governance">社会治理部</div>
+                    <div class="dept-tab" data-dept="economic-development">经济发展部</div>
+                    <div class="dept-tab" data-dept="industry-promotion">产业促进部</div>
+                    <div class="dept-tab" data-dept="finance">财政金融部</div>
+                    <div class="dept-tab" data-dept="planning">规划和自然资源部</div>
+                    <div class="dept-tab" data-dept="miit">工信科技部</div>
+                    <div class="dept-tab" data-dept="construction">建设管理部</div>
+                    <div class="dept-tab" data-dept="social-affairs">社会事业部</div>
+                    <div class="dept-tab" data-dept="law-enforcement">综合执法部</div>
+                </div>
+
+                <!-- 数字城市部 -->
+                <div class="app-list" data-dept="digital-city">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://60.208.85.78:20600" target="_blank">
+                            <div class="app-icon"><i class="fa fa-project-diagram"></i></div>
+                            <div class="app-name">起步区建设项目综合管理平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://lxsq.jnqbqzhcs.com:9091/futurecommunity-centernew/?domainName=jnqbq-standard2.0.ictsoft.cn#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-home"></i></div>
+                            <div class="app-name">起步区理想社区平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://172.16.70.62" target="_blank">
+                            <div class="app-icon"><i class="fa fa-server"></i></div>
+                            <div class="app-name">政务服务信息化建设项目</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="http://100.182.2.29" target="_blank">
+                            <div class="app-icon"><i class="fa fa-robot"></i></div>
+                            <div class="app-name">数字人"黄小政"</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="http://dljz.mof.gov.cn/#/homePage" target="_blank">
+                            <div class="app-icon"><i class="fa fa-file-invoice"></i></div>
+                            <div class="app-name">全国代理记账行业监管服务平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://60.216.97.246:8089/sdfda/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-stamp"></i></div>
+                            <div class="app-name">山东省药品监督管理局行政许可审批系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://zjtongji.gsxt.gov.cn:9898/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-chart-bar"></i></div>
+                            <div class="app-name">国家市场监管总局统计调查信息系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://60.208.140.178:50012/user/login?redirect=%2Fdashboard%2Fanalysis" target="_blank">
+                            <div class="app-icon"><i class="fa fa-car"></i></div>
+                            <div class="app-name">车路云一体化平台</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 办公室 -->
+                <div class="app-list" data-dept="office" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 党群工作部 -->
+                <div class="app-list" data-dept="party-work" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 宣传文化部 -->
+                <div class="app-list" data-dept="propaganda" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 社会治理部 -->
+                <div class="app-list" data-dept="social-governance" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://192.168.202.1" target="_blank">
+                            <div class="app-icon"><i class="fa fa-video"></i></div>
+                            <div class="app-name">雪亮工程系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="http://111.34.80.174" target="_blank">
+                            <div class="app-icon"><i class="fa fa-balance-scale"></i></div>
+                            <div class="app-name">起步区法律服务综合管理平台</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://lxsq.jnqbqzhcs.com:9091/futurecommunity-centernew/?domainName=jnqbq-standard2.0.ictsoft.cn#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-home"></i></div>
+                            <div class="app-name">起步区理想社区平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://117.73.254.171:10010/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-fire-extinguisher"></i></div>
+                            <div class="app-name">消防监督管理系统</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://www.sdaj.gov.cn/infobase/logincenter?userType=gov" target="_blank">
+                            <div class="app-icon"><i class="fa fa-hard-hat"></i></div>
+                            <div class="app-name">山东省安全生产信息平台</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="http://www.nndims.com/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-cloud-rain"></i></div>
+                            <div class="app-name">自然灾害灾情管理系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="https://117.73.255.132:38082/login/rescue" target="_blank">
+                            <div class="app-icon"><i class="fa fa-boxes"></i></div>
+                            <div class="app-name">省救灾和物资保障管理系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="https://mh.mem.cegn.cn" target="_blank">
+                            <div class="app-icon"><i class="fa fa-exclamation-triangle"></i></div>
+                            <div class="app-name">自然灾害综合风险应急管理系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item more-item">
+                        <a href="./政务办公.html#social-governance" target="_blank">
+                            <div class="app-icon"><i class="fa fa-ellipsis-h"></i></div>
+                            <div class="app-name">更多</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="http://124.128.226.230:8090/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-shield-alt"></i></div>
+                            <div class="app-name">泉城安全综合监管平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://sdwh.nrcc.com.cn:6200/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-flask"></i></div>
+                            <div class="app-name">山东省危险化学品数字化管控系统</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://www.sdaj.gov.cn/intermediary/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-search"></i></div>
+                            <div class="app-name">山东省安全评价检测检验机构管理系统</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://whpdj.mem.gov.cn/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-registered"></i></div>
+                            <div class="app-name">危险化学品登记综合服务系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://aqsc-anquanfeiyong.mem.gov.cn/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-dollar-sign"></i></div>
+                            <div class="app-name">安全生产费用直报系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://jinan.sdyzs.gov.cn:10192/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-handshake"></i></div>
+                            <div class="app-name">山东省一站式矛盾纠纷多元化解平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://jinanodradmin.yilvs.com:2280/login?redirect=%2Fhome" target="_blank">
+                            <div class="app-icon"><i class="fa fa-balance-scale"></i></div>
+                            <div class="app-name">济南市一站式矛盾纠纷多元调处化解调度平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://221.214.69.232:30932/jpaas/cms/info/mypublic/recycle" target="_blank">
+                            <div class="app-icon"><i class="fa fa-globe"></i></div>
+                            <div class="app-name">济南市政府网站和政务新媒体监管平台</div>
+                        </a>
+                    </div> -->
+                       <div class="app-item more-item">
+                        <a href="./政务办公.html#social-governance" target="_blank">
+                            <div class="app-icon"><i class="fa fa-ellipsis-h"></i></div>
+                            <div class="app-name">更多</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://shandianyun.iqilu.com/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-bolt"></i></div>
+                            <div class="app-name">闪电云平台</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 经济发展部 -->
+                <div class="app-list" data-dept="economic-development" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://60.208.85.78:20600" target="_blank">
+                            <div class="app-icon"><i class="fa fa-project-diagram"></i></div>
+                            <div class="app-name">起步区建设项目综合管理平台</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 产业促进部 -->
+                <div class="app-list" data-dept="industry-promotion" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://59.206.133.178/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-handshake"></i></div>
+                            <div class="app-name">济南市招商引资项目库</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="http://kp.invest.sdcom.gov.cn/#/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-project-diagram"></i></div>
+                            <div class="app-name">山东省对外招商引资重点项目库</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://oil.sdcom.gov.cn/m" target="_blank">
+                            <div class="app-icon"><i class="fa fa-gas-pump"></i></div>
+                            <div class="app-name">山东省成品油经营企业信息管理系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://ecomp.mofcom.gov.cn/loginCorp.html" target="_blank">
+                            <div class="app-icon"><i class="fa fa-store"></i></div>
+                            <div class="app-name">商务部业务系统统一平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://123.232.119.120:8091/gateway/index" target="_blank">
+                            <div class="app-icon"><i class="fa fa-industry"></i></div>
+                            <div class="app-name">山东省化工专项行动智慧化工综合管理服务平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://cloud.kjt.shandong.gov.cn/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-cloud"></i></div>
+                            <div class="app-name">山东省科技云平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://119.164.252.194/a/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-cloud"></i></div>
+                            <div class="app-name">济南市科技云平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://119.148.161.114:8061/portalIndex" target="_blank">
+                            <div class="app-icon"><i class="fa fa-chart-line"></i></div>
+                            <div class="app-name">山东省工业经济综合决策分析平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://123.232.119.104:13001/token/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-desktop"></i></div>
+                            <div class="app-name">电子政务综合服务平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://www.sdsdldjsqy.com" target="_blank">
+                            <div class="app-icon"><i class="fa fa-rocket"></i></div>
+                            <div class="app-name">省瞪羚独角兽申报系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item more-item">
+                        <a href="./政务办公.html#industry-promotion" target="_blank">
+                            <div class="app-icon"><i class="fa fa-ellipsis-h"></i></div>
+                            <div class="app-name">更多</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="https://www.yztdpt.cn/sys/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-layer-group"></i></div>
+                            <div class="app-name">山东省优质中小企业梯度培育库管理端</div>
+                        </a>
+                    </div> -->
+                </div>
+
+                <!-- 财政金融部 -->
+                <div class="app-list" data-dept="finance" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://czbtybb.mof.gov.cn/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-file-invoice-dollar"></i></div>
+                            <div class="app-name">财务部统一报表系统</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="https://117.73.21.5:8090/login?redirect=%2Findex" target="_blank">
+                            <div class="app-icon"><i class="fa fa-exchange-alt"></i></div>
+                            <div class="app-name">新旧动能转换基金管理系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="http://124.128.19.221:9097/Default.aspx" target="_blank">
+                            <div class="app-icon"><i class="fa fa-table"></i></div>
+                            <div class="app-name">山东省财政企业财务信息报送系统</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://ctzgl.sdcz.gov.cn:19997/index" target="_blank">
+                            <div class="app-icon"><i class="fa fa-city"></i></div>
+                            <div class="app-name">山东省城投债务管理信息系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://112.230.197.174:8081/fund/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-coins"></i></div>
+                            <div class="app-name">济南市财政局基金检测一体化系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://112.230.197.174:7901/#/collection" target="_blank">
+                            <div class="app-icon"><i class="fa fa-archive"></i></div>
+                            <div class="app-name">济南市资产数字化管理平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://60.208.85.93:5200/platform/runtime/sys/web/index.html" target="_blank">
+                            <div class="app-icon"><i class="fa fa-landmark"></i></div>
+                            <div class="app-name">济南市国资监管平台</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="http://jrfdy.dfjrjgj.shandong.gov.cn/shandong/#/home" target="_blank">
+                            <div class="app-icon"><i class="fa fa-piggy-bank"></i></div>
+                            <div class="app-name">山东省金融伙伴系统</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 规划和自然资源部 -->
+                <div class="app-list" data-dept="planning" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://202.110.200.114/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-map-marked-alt"></i></div>
+                            <div class="app-name">先行区规划"一张蓝图"系统</div>
+                        </a>
+                    </div> -->
+                </div>
+
+                <!-- 工信部 -->
+                <div class="app-list" data-dept="miit" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 建设管理部 -->
+                <div class="app-list" data-dept="construction" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://60.208.85.78:20600" target="_blank">
+                            <div class="app-icon"><i class="fa fa-project-diagram"></i></div>
+                            <div class="app-name">起步区建设项目综合管理平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://lyz.forestry.gov.cn/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-tree"></i></div>
+                            <div class="app-name">林业工作站数据填报</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://119.164.253.207:8183/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-leaf"></i></div>
+                            <div class="app-name">济南市古树名木系统</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://lczhtj.forestry.gov.cn" target="_blank">
+                            <div class="app-icon"><i class="fa fa-chart-bar"></i></div>
+                            <div class="app-name">全国林业草原综合统计管理系统</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="https://os.bdpc.org.cn" target="_blank">
+                            <div class="app-icon"><i class="fa fa-bug"></i></div>
+                            <div class="app-name">林业有害生物防治信息管理系统</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://jnly.snzfnm.com/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-apple-alt"></i></div>
+                            <div class="app-name">食用林产品质量安全系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://www.yiwuzhishu.cn/manage.php/Public/login.html" target="_blank">
+                            <div class="app-icon"><i class="fa fa-seedling"></i></div>
+                            <div class="app-name">义务植树网站</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://117.73.255.2:18866/work-platform/login?redirect=%2F" target="_blank">
+                            <div class="app-icon"><i class="fa fa-tree"></i></div>
+                            <div class="app-name">林长制平台</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item more-item">
+                        <a href="./政务办公.html#construction" target="_blank">
+                            <div class="app-icon"><i class="fa fa-ellipsis-h"></i></div>
+                            <div class="app-name">更多</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="https://pq.bdpc.org.cn" target="_blank">
+                            <div class="app-icon"><i class="fa fa-shield-alt"></i></div>
+                            <div class="app-name">全国林草植物检疫信息化管理与服务平台</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="https://219.142.70.234/zj" target="_blank">
+                            <div class="app-icon"><i class="fa fa-money-check-alt"></i></div>
+                            <div class="app-name">自然资源资金监管系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="http://www.forestry.gov.cn/ywxt.html?service=http://124.205.185.91/lmzm/Account" target="_blank">
+                            <div class="app-icon"><i class="fa fa-spa"></i></div>
+                            <div class="app-name">林草种苗</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="http://124.128.155.241/system/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-cut"></i></div>
+                            <div class="app-name">绿化养护管理系统</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://39.100.77.115:6500/login.aspx" target="_blank">
+                            <div class="app-icon"><i class="fa fa-water"></i></div>
+                            <div class="app-name">济南市水务局河湖管理第三方巡查管理平台</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="http://60.208.113.77:8081/sdhzsys/system/login/login.jsp" target="_blank">
+                            <div class="app-icon"><i class="fa fa-tint"></i></div>
+                            <div class="app-name">山东省河湖长制管理信息系统</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://124.128.33.20:8083/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-satellite"></i></div>
+                            <div class="app-name">济南市市级卫片监测系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="http://jdcj.mwr.cn:7080/cjfw/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-hard-hat"></i></div>
+                            <div class="app-name">水利安全生产监管信息系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="https://sd.shaniaoyun.com/jinan/index.html" target="_blank">
+                            <div class="app-icon"><i class="fa fa-drafting-compass"></i></div>
+                            <div class="app-name">济南市数字化联合审图系统</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="http://124.128.226.240:8087/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-building"></i></div>
+                            <div class="app-name">济南市智慧物业管理服务平台</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 社会事业部 -->
+                <div class="app-list" data-dept="social-affairs" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://sdbe.sdei.edu.cn/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-graduation-cap"></i></div>
+                            <div class="app-name">山东省基础教育管理信息化平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://jsgl.sdei.edu.cn/jsdwjs/login.htm" target="_blank">
+                            <div class="app-icon"><i class="fa fa-chalkboard-teacher"></i></div>
+                            <div class="app-name">山东省教师队伍建设管理平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://117.73.253.239:9000/sdzc-web-ui/business/ww/tzgg_articlePage.html?articleType=01" target="_blank">
+                            <div class="app-icon"><i class="fa fa-user-tie"></i></div>
+                            <div class="app-name">山东省专业技术人员管理服务平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://xqjycas.sdei.edu.cn:91/cas/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-child"></i></div>
+                            <div class="app-name">全国学前教育管理信息系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://zxxs.moe.edu.cn/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-school"></i></div>
+                            <div class="app-name">全国基础教育管理服务平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://sdxxaq.sdei.edu.cn/education/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-lock"></i></div>
+                            <div class="app-name">山东省学校安全管理系统</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="https://dredu.sdetv.com.cn/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-camera"></i></div>
+                            <div class="app-name">山东双减举报随手拍</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="https://xwjg.sdei.edu.cn/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-minus-circle"></i></div>
+                            <div class="app-name">双减工作情况调度平台</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item more-item">
+                        <a href="./政务办公.html#social-affairs" target="_blank">
+                            <div class="app-icon"><i class="fa fa-ellipsis-h"></i></div>
+                            <div class="app-name">更多</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://www.qshnhealth.com/portal/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-heartbeat"></i></div>
+                            <div class="app-name">青少年健康数据管理系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://cszg.mca.gov.cn/platform/login.html" target="_blank">
+                            <div class="app-icon"><i class="fa fa-hand-holding-heart"></i></div>
+                            <div class="app-name">全国慈善信息公开平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://120.221.154.220:8088/qlk-web" target="_blank">
+                            <div class="app-icon"><i class="fa fa-list-alt"></i></div>
+                            <div class="app-name">山东省政务服务事项标准化梳理和管理系统</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="http://124.128.48.211:8888/MZT/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-map-marked-alt"></i></div>
+                            <div class="app-name">山东省行政区域界线界桩管理平台</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="http://dmgl.mca.gov.cn/Pages/Index.html" target="_blank">
+                            <div class="app-icon"><i class="fa fa-globe-asia"></i></div>
+                            <div class="app-name">中国国家地名信息库</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://zhcl.jinandpf.cn/home/index.html#/home" target="_blank">
+                            <div class="app-icon"><i class="fa fa-wheelchair"></i></div>
+                            <div class="app-name">济南市残联信息化平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="https://manage.sddpf.org.cn/clzt/a/index" target="_blank">
+                            <div class="app-icon"><i class="fa fa-hands-helping"></i></div>
+                            <div class="app-name">山东省残疾人工作平台</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://portal.cdpf.org.cn" target="_blank">
+                            <div class="app-icon"><i class="fa fa-universal-access"></i></div>
+                            <div class="app-name">全国残联信息化服务平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="https://jnmz.jinan.gov.cn/jnmz/jgpt/#/portalNew" target="_blank">
+                            <div class="app-icon"><i class="fa fa-user-clock"></i></div>
+                            <div class="app-name">济南市养老服务综合管理平台</div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="app-item">
+                        <a href="http://221.214.8.70:8901/mz/#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-video"></i></div>
+                            <div class="app-name">济南市民政局养老机构视频监管平台</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://jinan.tianyucare.com/jnHomeserviceCenter/#/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-home"></i></div>
+                            <div class="app-name">济南市居家养老服务信息平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://www.sdwstj.org/webPage/esmain/portal/loginportal.do?portalid=DLnew_copy" target="_blank">
+                            <div class="app-icon"><i class="fa fa-hospital"></i></div>
+                            <div class="app-name">国家卫生统计信息网络直报系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://mftgyj.yjglzx.org.cn/system/login.html" target="_blank">
+                            <div class="app-icon"><i class="fa fa-pills"></i></div>
+                            <div class="app-name">免费提供避孕药具服务管理业务信息系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="http://124.128.226.239:5189/login?redirect=%2F" target="_blank">
+                            <div class="app-icon"><i class="fa fa-medkit"></i></div>
+                            <div class="app-name">济南市学校卫生综合管理平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="http://121.36.16.157:8081/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-stethoscope"></i></div>
+                            <div class="app-name">山东省学生常见病监测数据管理平台</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://sppt.cfsa.net.cn/goto/blogin" target="_blank">
+                            <div class="app-icon"><i class="fa fa-utensils"></i></div>
+                            <div class="app-name">全民健康保障食品安全风险评估业务应用平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://www.zybwhsb.com/" target="_blank">
+                            <div class="app-icon"><i class="fa fa-lungs"></i></div>
+                            <div class="app-name">工作场所职业病危害因素监测系统</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 综合执法部 -->
+                <div class="app-list" data-dept="law-enforcement" style="display:none;">
+                    <div class="app-item">
+                        <a href="https://szmp.jnqbqzhcs.com:8504/user/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="https://ipvs.slwunicom.com:14433/console/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-eye"></i></div>
+                            <div class="app-name">视联网能力平台</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://www.jnqbqzhcg.com:7777/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-city"></i></div>
+                            <div class="app-name">起步区智慧城管系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://www.qbqzhzf.site:8082/login?redirect=%2Fhome" target="_blank">
+                            <div class="app-icon"><i class="fa fa-gavel"></i></div>
+                            <div class="app-name">起步区智慧执法系统</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="https://flzyx.hifenlei.com/index.html?redirect_url=%2FrecycleVolunteerService%2Fvolunteer%2Fteam#/login" target="_blank">
+                            <div class="app-icon"><i class="fa fa-recycle"></i></div>
+                            <div class="app-name">志愿者管理平台</div>
+                        </a>
+                    </div>
+                    <!-- <div class="app-item">
+                        <a href="https://124.128.39.248:9020/portal/jsp/public/login.jsp" target="_blank">
+                            <div class="app-icon"><i class="fa fa-capsules"></i></div>
+                            <div class="app-name">山东省药品监督管理局日常监管系统</div>
+                        </a>
+                    </div> -->
+                    <div class="app-item">
+                        <a href="https://yjtj.nmpa.gov.cn:8001/yj/esmain/portal/loginportal.do" target="_blank">
+                            <div class="app-icon"><i class="fa fa-chart-pie"></i></div>
+                            <div class="app-name">国家药品监督管理统计信息系统</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数字大脑 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-brain"></i>
+                数字大脑
+            </h2>
+            <div class="brain-carousel" id="brainCarousel">
+                <!-- 轮播图1 -->
+                <div class="carousel-slide active">
+                    <img src="imagine/数字城市.png" alt="数字大脑1">
+                    <div class="slide-text">
+                        <h3 class="slide-title">城市运行监测中心</h3>
+                        <p class="slide-desc">实时监控城市运行状态，智能分析预警</p>
+                    </div>
+                </div>
+                <!-- 轮播图2 -->
+                <div class="carousel-slide">
+                    <img src="imagine/数字城市.png" alt="数字大脑2">
+                    <div class="slide-text">
+                        <h3 class="slide-title">政务数据可视化平台</h3>
+                        <p class="slide-desc">多维度展示政务数据，辅助决策分析</p>
+                    </div>
+                </div>
+                <!-- 轮播图3 -->
+                <div class="carousel-slide">
+                    <img src="imagine/数字城市.png" alt="数字大脑3">
+                    <div class="slide-text">
+                        <h3 class="slide-title">智能决策分析系统</h3>
+                        <p class="slide-desc">基于大数据的政务决策辅助支持</p>
+                    </div>
+                </div>
+                <!-- 轮播指示器 -->
+                <div class="carousel-indicators">
+                    <div class="indicator-dot active" data-index="0"></div>
+                    <div class="indicator-dot" data-index="1"></div>
+                    <div class="indicator-dot" data-index="2"></div>
+                </div>
+                <!-- 轮播控制按钮 -->
+                <div class="carousel-controls">
+                    <div class="carousel-control prev-btn">
+                        <i class="fa fa-chevron-left"></i>
+                    </div>
+                    <div class="carousel-control next-btn">
+                        <i class="fa fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+  <!-- 政策通知 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-bell"></i>
+                政策通知
+            </h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fa fa-file-contract"></i></div>
+                        <h3 class="card-title">政策文件</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul class="policy-list">
+                            <li class="policy-item">
+                                <a href="./policy-detail.html?id=1">
+                                    <div class="policy-title">关于进一步推进数字政府建设的实施意见</div>
+                                    <div class="policy-date">2026-01-05</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./policy-detail.html?id=2">
+                                    <div class="policy-title">2026年政务服务优化提升工作方案</div>
+                                    <div class="policy-date">2026-01-01</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./policy-detail.html?id=3">
+                                    <div class="policy-title">智慧城市建设专项资金管理办法</div>
+                                    <div class="policy-date">2025-12-28</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./policy-detail.html?id=4">
+                                    <div class="policy-title">政务数据开放共享管理办法</div>
+                                    <div class="policy-date">2025-12-20</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="./policy-file.html" class="more-link">更多政策 →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fa fa-bullhorn"></i></div>
+                        <h3 class="card-title">通知公告</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul class="policy-list">
+                            <li class="policy-item">
+                                <a href="./notice-detail.html?id=1">
+                                    <div class="policy-title">关于开展2026年度政务系统培训的通知</div>
+                                    <div class="policy-date">2026-01-10</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./notice-detail.html?id=2">
+                                    <div class="policy-title">关于2026年春节放假安排的通知</div>
+                                    <div class="policy-date">2026-01-08</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./notice-detail.html?id=3">
+                                    <div class="policy-title">关于开展政务服务满意度调查的通知</div>
+                                    <div class="policy-date">2026-01-03</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./notice-detail.html?id=4">
+                                    <div class="policy-title">关于政务服务大厅搬迁的公告</div>
+                                    <div class="policy-date">2025-12-25</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="./notice-announce.html" class="more-link">更多通知 →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fa fa-lightbulb"></i></div>
+                        <h3 class="card-title">AI政策解读</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>最新政策：《关于进一步推进数字政府建设的实施意见》</p>
+                        <p style="margin: 10px 0;">AI核心解读：到2027年，全市数字政府建设水平显著提升，政务服务事项全程网办率达到95%以上，数据共享交换体系更加完善。</p>
+                        <p>重点任务：构建一体化政务服务体系、完善数据资源管理体系、提升政务智能化水平。</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="./ai-policy.html" class="btn btn-primary">更多解读</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部栏 - 新增完整内容 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-col">
+                    <h3>平台导航</h3>
+                    <ul>
+                        <li>首页</li>
+                        <li>AI办公</li>
+                        <li>政务办公</li>
+                        <li>数字大脑</li>
+                        <li>政策通知</li>
+                        <li>办公助手</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>常用服务</h3>
+                    <ul>
+                        <li>民意速办平台</li>
+                        <li>数据填报平台</li>
+                        <li>视频监控平台</li>
+                        <li>AI公文写作</li>
+                        <li>公文模板库</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>部门入口</h3>
+                    <ul>
+                        <li>数字城市部</li>
+                        <li>办公室</li>
+                        <li>党群工作部</li>
+                        <li>宣传文化部</li>
+                        <li>社会治理部</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li>技术支持：0531-66604396</li>
+                        <li>工作时间：9:00-17:00</li>
+                        <li>地址：起步区管委会城市运营指挥中心</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 政务内部统一办公门户 版权所有 | 京ICP备12345678号-1</p>
+                <p>技术支持：政务信息化建设中心</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 智能问答机器人 -->
+    <div class="ai-chatbot">
+        <div class="chatbot-toggle" id="chatbotToggle">
+            <i class="fa fa-robot"></i>
+        </div>
+        <div class="chatbot-panel" id="chatbotPanel">
+            <div class="chatbot-header">
+                <div class="chatbot-title">智能问答助手</div>
+                <div class="chatbot-close" id="chatbotClose">×</div>
+            </div>
+            <div class="chatbot-body" id="chatbotBody">
+                <div class="chat-message bot">
+                    <div class="message-content">
+                        您好！我是智能问答助手，有什么可以帮助您的？
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" class="chatbot-input" id="chatbotInput" placeholder="请输入您的问题...">
+                <button class="chatbot-send" id="chatbotSend"><i class="fa fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 功能开发中弹窗 -->
+    <div class="developing-overlay" id="developingOverlay">
+        <div class="developing-box">
+            <div class="developing-icon"><i class="fa fa-gears"></i></div>
+            <h2 class="developing-title">功能正在开发中</h2>
+            <p class="developing-desc">该模块正在紧张开发与优化中，敬请期待！<br>如需了解更多开发进度，可联系技术支持人员。</p>
+            <a href="javascript:void(0)" class="btn btn-primary" onclick="document.getElementById('developingOverlay').style.display='none'">确定</a>
+        </div>
+    </div>
+
+    <!-- 轮播图JS -->
+    <script>
+        // 轮播图函数
+        function initCarousel() {
+            const carousel = document.getElementById('brainCarousel');
+            const slides = carousel.querySelectorAll('.carousel-slide');
+            const indicators = carousel.querySelectorAll('.indicator-dot');
+            const prevBtn = carousel.querySelector('.prev-btn');
+            const nextBtn = carousel.querySelector('.next-btn');
+            let currentIndex = 0;
+            const slideCount = slides.length;
+
+            function showSlide(index) {
+                // 隐藏所有幻灯片
+                slides.forEach(slide => slide.classList.remove('active'));
+                // 移除所有指示器的活跃状态
+                indicators.forEach(dot => dot.classList.remove('active'));
+                // 显示当前幻灯片
+                slides[index].classList.add('active');
+                // 激活当前指示器
+                indicators[index].classList.add('active');
+                // 更新当前索引
+                currentIndex = index;
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slideCount;
+                showSlide(currentIndex);
+            }
+
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+                showSlide(currentIndex);
+            }
+
+            // 自动轮播
+            let autoplayInterval = setInterval(nextSlide, 5000);
+
+            // 点击指示器切换幻灯片
+            indicators.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    clearInterval(autoplayInterval);
+                    showSlide(index);
+                    autoplayInterval = setInterval(nextSlide, 5000);
+                });
+            });
+
+            // 点击左右按钮切换幻灯片
+            prevBtn.addEventListener('click', () => {
+                clearInterval(autoplayInterval);
+                prevSlide();
+                autoplayInterval = setInterval(nextSlide, 5000);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                clearInterval(autoplayInterval);
+                nextSlide();
+                autoplayInterval = setInterval(nextSlide, 5000);
+            });
+
+            // 初始化显示第一张幻灯片
+            showSlide(0);
+        }
+
+        // 部门应用切换
+        function initDeptTabs() {
+            const tabs = document.querySelectorAll('.dept-tab');
+            const appLists = document.querySelectorAll('.dept-apps .app-list');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const target = this.getAttribute('data-dept');
+                    // 切换 tab 激活状态
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    // 切换对应 app-list 显示
+                    appLists.forEach(list => {
+                        list.style.display = list.getAttribute('data-dept') === target ? 'grid' : 'none';
+                    });
+                });
+            });
+        }
+
+        // 智能问答机器人功能
+        function initChatbot() {
+            const chatbotToggle = document.getElementById('chatbotToggle');
+            const chatbotPanel = document.getElementById('chatbotPanel');
+            const chatbotClose = document.getElementById('chatbotClose');
+            const chatbotBody = document.getElementById('chatbotBody');
+            const chatbotInput = document.getElementById('chatbotInput');
+            const chatbotSend = document.getElementById('chatbotSend');
+
+            // 切换机器人面板显示/隐藏
+            chatbotToggle.addEventListener('click', function() {
+                chatbotPanel.classList.toggle('show');
+            });
+
+            // 关闭机器人面板
+            chatbotClose.addEventListener('click', function() {
+                chatbotPanel.classList.remove('show');
+            });
+
+            // 发送消息
+            function sendMessage() {
+                const message = chatbotInput.value.trim();
+                if (message) {
+                    // 添加用户消息
+                    addMessage('user', message);
+                    chatbotInput.value = '';
+
+                    // 模拟机器人回复
+                    setTimeout(() => {
+                        const reply = getBotReply(message);
+                        addMessage('bot', reply);
+                    }, 500);
+                }
+            }
+
+            // 添加消息到聊天窗口
+            function addMessage(type, content) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${type}`;
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        ${content}
+                    </div>
+                `;
+                chatbotBody.appendChild(messageDiv);
+                chatbotBody.scrollTop = chatbotBody.scrollHeight;
+            }
+
+            // 简单的机器人回复逻辑
+            function getBotReply(message) {
+                message = message.toLowerCase();
+                
+                if (message.includes('你好') || message.includes('您好') || message.includes('hi') || message.includes('hello')) {
+                    return '您好！我是政务智能问答助手，很高兴为您服务。';
+                } else if (message.includes('用印') || message.includes('盖章')) {
+                    return '您可以在办公助手页面下载用印申请模板，或者直接访问政务办公系统进行用印申请。';
+                } else if (message.includes('发文') || message.includes('公文')) {
+                    return '您可以在办公助手页面下载发文模板，或者使用AI办公中的公文写作工具生成公文。';
+                } else if (message.includes('logo') || message.includes('图片')) {
+                    return '您可以在办公助手页面的常用图片素材 section 下载区内LOGO和其他常用图片。';
+                } else if (message.includes('ppt') || message.includes('模板')) {
+                    return '您可以在办公助手页面下载各种PPT模板，包括党建、工作汇报等类型。';
+                } else if (message.includes('政策') || message.includes('通知')) {
+                    return '您可以在政策通知页面查看最新的政策文件和通知公告。';
+                } else if (message.includes('系统') || message.includes('平台')) {
+                    return '您可以在政务办公页面访问各个部门的业务系统，或者在首页的常用系统 section 快速访问常用系统。';
+                } else if (message.includes('数字大脑')) {
+                    return '数字大脑页面展示了部门一张图和街办分中心的可视化数据，助力政务决策。';
+                } else if (message.includes('ai办公') || message.includes('智能办公')) {
+                    return 'AI办公页面提供了AI公文写作、公文模板库、AI知识库等智能工具，提升办公效率。';
+                } else if (message.includes('帮助') || message.includes('指南')) {
+                    return '您可以在各个页面的帮助中心获取使用指南，或者直接向我咨询具体问题。';
+                } else {
+                    return '抱歉，我暂时无法回答这个问题。您可以尝试换一种方式提问，或者联系技术支持获取帮助。';
+                }
+            }
+
+            // 发送按钮点击事件
+            chatbotSend.addEventListener('click', sendMessage);
+
+            // 回车键发送消息
+            chatbotInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initCarousel();
+            initDeptTabs();
+            initChatbot();
+
+            // 未开发功能点击提示（真实页面和外链不拦截）
+            const realPages = ['统一办公2.html', 'ai办公.html', '政务办公.html', '数字大脑.html', '政策通知.html', '办公助手.html'];
+            document.querySelectorAll('a[href]').forEach(function(link) {
+                const href = link.getAttribute('href');
+                if (!href.startsWith('http') && !href.startsWith('#') && !href.startsWith('javascript')) {
+                    const isRealPage = realPages.some(function(page) { return href.includes(page); });
+                    if (!isRealPage) {
+                        link.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            document.getElementById('developingOverlay').style.display = 'flex';
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
