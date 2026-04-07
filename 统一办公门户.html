@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政务内部统一办公门户</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #005ea5;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #004a87;
+        }
+
+        .btn-secondary {
+            background-color: #f0f2f5;
+            color: #333;
+            border: 1px solid #dcdfe6;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e8eaed;
+        }
+
+        /* 小程序二维码样式 - 新增 */
+        .mini-program {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .mini-program-trigger {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #005ea5;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .mini-program-trigger:hover {
+            background-color: #004a87;
+            transform: scale(1.05);
+        }
+
+        .mini-program-content {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            display: none;
+            width: 180px;
+            text-align: center;
+        }
+
+        .mini-program:hover .mini-program-content {
+            display: block;
+        }
+
+        .mini-program-qrcode {
+            width: 150px;
+            height: 150px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .mini-program-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #005ea5;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            color: #005ea5;
+        }
+
+        .header-nav {
+            padding: 0;
+        }
+
+        .nav-list {
+            display: flex;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-item:hover {
+            color: #005ea5;
+        }
+
+        .nav-item.active {
+            color: #005ea5;
+            border-bottom: 3px solid #005ea5;
+        }
+
+        /* 轮播图 - 使用去文字后的banner图 */
+        .banner {
+            height: 300px;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 新增：通过滤镜弱化图片文字，或直接替换去文字后的图片 */
+            filter: brightness(1.05) contrast(1.05);
+        }
+
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .banner-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .banner-desc {
+            font-size: 16px;
+        }
+
+        /* 功能专区 */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #005ea5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #005ea5;
+            font-size: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            transition: all 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #e6f4ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #005ea5;
+        }
+
+        .card-content {
+            flex: 1;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .card-footer {
+            text-align: right;
+        }
+
+        .more-link {
+            color: #005ea5;
+            font-weight: 500;
+        }
+
+        /* AI办公工具区 */
+        .ai-tools {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ai-tool {
+            flex: 1;
+            min-width: 250px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .tool-icon {
+            font-size: 40px;
+            color: #005ea5;
+            margin-bottom: 15px;
+        }
+
+        .tool-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tool-desc {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* 部门应用入口 - 优化展示样式 */
+        .dept-apps {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+
+        .dept-tabs {
+            display: flex;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .dept-tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .dept-tab.active {
+            color: #005ea5;
+            border-bottom-color: #005ea5;
+        }
+
+        .app-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+        }
+
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            height: 120px;
+            background-color: #f8f9fa;
+        }
+
+        .app-item a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .app-item:hover {
+            background-color: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .app-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #e6f4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #005ea5;
+            font-size: 22px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .app-name {
+            font-size: 13px;
+            text-align: center;
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* 政策通知区 */
+        .policy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .policy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #fff;
+            border-radius: 4px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .policy-item a {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+
+        .policy-item:hover {
+            border-left-color: #005ea5;
+            background-color: #f8f9fa;
+        }
+
+        .policy-title {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80%;
+        }
+
+        .policy-date {
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* 常用系统 */
+        .common-systems {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .system-item {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .system-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .system-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .system-icon {
+            font-size: 24px;
+            color: #005ea5;
+            margin-bottom: 8px;
+        }
+
+        .system-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* 数字大脑图片轮播 */
+        .brain-carousel {
+            position: relative;
+            height: 300px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-slide .slide-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: #fff;
+        }
+
+        .carousel-slide .slide-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .carousel-slide .slide-desc {
+            font-size: 14px;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .indicator-dot.active {
+            background-color: #fff;
+            transform: scale(1.2);
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 10;
+            padding: 0 15px;
+        }
+
+        .carousel-control {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-control:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* 底部信息 */
+        .footer {
+            background-color: #005ea5;
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-col h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-col ul {
+            font-size: 13px;
+        }
+
+        .footer-col li {
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .footer-col li:hover {
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 0;
+            }
+
+            .nav-list {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .nav-item {
+                padding: 10px 15px;
+            }
+
+            .banner {
+                height: 200px;
+            }
+
+            .banner-title {
+                font-size: 20px;
+            }
+
+            .banner-desc {
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .common-systems {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .brain-carousel {
+                height: 200px;
+            }
+            
+            .app-list {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .app-item {
+                height: 100px;
+                padding: 15px 5px;
+            }
+            
+            .app-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            /* 移动端隐藏小程序入口，或调整位置 */
+            .mini-program {
+                display: none;
+            }
+        }
+    </style>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 小程序二维码入口 - 新增 -->
+    <div class="mini-program">
+        <div class="mini-program-trigger">
+            <i class="fa fa-qrcode"></i>
+        </div>
+        <div class="mini-program-content">
+            <div class="mini-program-qrcode">
+                <div>
+                    <i class="fa fa-qrcode" style="font-size: 40px; margin-bottom: 10px;"></i>
+                    <p>起步区接诉即办</p>
+                    <p>小程序二维码</p>
+                </div>
+            </div>
+            <div class="mini-program-name">起步区接诉即办</div>
+        </div>
+    </div>
+
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMwMDVlYTVjIi8+CjxwYXRoIGQ9Ik0yMCAxMFYzMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTEwIDIwSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=" alt="政务平台logo">
+                    <div class="logo-text">政务内部统一办公门户</div>
+                </div>
+                <div class="user-area">
+                    <div class="user-info">
+                        <div class="user-avatar"><i class="fa fa-user"></i></div>
+                        <span>政务管理员</span>
+                    </div>
+                    <div class="logout-btn" id="logout-btn"><i class="fa fa-sign-out-alt"></i> 退出登录</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <ul class="nav-list">
+                    <li class="nav-item active">
+                        <a href="./统一办公门户.html">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./ai办公.html">AI办公</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./政务办公.html">政务办公</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./数字大脑.html">数字大脑</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./政策通知.html">政策通知</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 轮播图 - 使用去文字后的banner图 -->
+    <div class="banner">
+        <!-- 替换为去文字后的图片地址，这里先使用处理后的样式，实际替换为去文字的图片URL -->
+        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/3c5785d6e5bd421f96e10e79c4fd8b2a.png~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=20260114152023831C03F100832E181519&rrcfp=dafada99&x-expires=2084599224&x-signature=XWGpPA21dHggAXPLSC64oU9BNDg%3D" alt="政务内部办公banner" class="banner-img">
+        <div class="banner-text">
+            <h2 class="banner-title">政务内部统一办公平台</h2>
+            <p class="banner-desc">智能办公 · 高效管理 · 数据驱动</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- 常用系统 -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fa fa-server"></i>
+                常用系统
+            </h2>
+            <div class="common-systems">
+                <div class="system-item">
+                    <a href="./minyi-platform.html">
+                        <div class="system-icon"><i class="fa fa-comments"></i></div>
+                        <div class="system-name">民意速办平台</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./vehicle-cloud.html">
+                        <div class="system-icon"><i class="fa fa-car"></i></div>
+                        <div class="system-name">车路云一体化平台</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./street-center.html">
+                        <div class="system-icon"><i class="fa fa-building"></i></div>
+                        <div class="system-name">街办分中心</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./ideal-community.html">
+                        <div class="system-icon"><i class="fa fa-home"></i></div>
+                        <div class="system-name">理想社区</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./data-report.html">
+                        <div class="system-icon"><i class="fa fa-file-excel"></i></div>
+                        <div class="system-name">数据填报平台</div>
+                    </a>
+                </div>
+                <div class="system-item">
+                    <a href="./video-monitor.html">
+                        <div class="system-icon"><i class="fa fa-video"></i></div>
+                        <div class="system-name">视频监控平台</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI办公工具专区 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-robot"></i>
+                AI办公服务
+            </h2>
+            <div class="ai-tools">
+                                <div class="ai-tool">
+                    <i class="fa fa-book tool-icon"></i>
+                    <h3 class="tool-title">AI知识库</h3>
+                    <p class="tool-desc">政务相关政策法规、业务知识智能查询</p>
+                    <a href="https://v2.fangcloud.com/hub-web/kbase-web/v4/aikbase?kbase=%2Fkbase-web%2Fv4%2Faikbase" class="btn btn-primary" target="_blank">进入知识库</a>
+                </div>
+                <div class="ai-tool">
+                    <i class="fa fa-file-alt tool-icon"></i>
+                    <h3 class="tool-title">AI公文写作</h3>
+                    <p class="tool-desc">智能生成规范政务公文，支持多种公文类型</p>
+                    <a href="./ai-writing.html" class="btn btn-primary">立即使用</a>
+                </div>
+                <div class="ai-tool">
+                    <i class="fa fa-clone tool-icon"></i>
+                    <h3 class="tool-title">公文模板库</h3>
+                    <p class="tool-desc">海量政务公文模板，一键套用，规范高效</p>
+                    <a href="./template-library.html" class="btn btn-primary">查看模板</a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 部门应用入口 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-link"></i>
+                部门应用入口
+            </h2>
+            <div class="dept-apps">
+                <div class="dept-tabs">
+                    <div class="dept-tab active">数字城市部</div>
+                    <div class="dept-tab">办公室</div>
+                    <div class="dept-tab">党群工作部</div>
+                    <div class="dept-tab">宣传文化部</div>
+                    <div class="dept-tab">社会治理部</div>
+                    <div class="dept-tab">经济发展部</div>
+                    <div class="dept-tab">产业促进部</div>
+                </div>
+                <div class="app-list">
+                    <div class="app-item">
+                        <a href="./minyi-platform.html">
+                            <div class="app-icon"><i class="fa fa-comments"></i></div>
+                            <div class="app-name">民意速办平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="./vehicle-cloud.html">
+                            <div class="app-icon"><i class="fa fa-car"></i></div>
+                            <div class="app-name">车路云一体化平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="./street-center.html">
+                            <div class="app-icon"><i class="fa fa-building"></i></div>
+                            <div class="app-name">街办分中心</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="./ideal-community.html">
+                            <div class="app-icon"><i class="fa fa-home"></i></div>
+                            <div class="app-name">理想社区</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="./data-report.html">
+                            <div class="app-icon"><i class="fa fa-file-excel"></i></div>
+                            <div class="app-name">数据填报平台</div>
+                        </a>
+                    </div>
+                    <div class="app-item">
+                        <a href="./video-monitor.html">
+                            <div class="app-icon"><i class="fa fa-video"></i></div>
+                            <div class="app-name">视频监控平台</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数字大脑 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-brain"></i>
+                数字大脑
+            </h2>
+            <div class="brain-carousel" id="brainCarousel">
+                <!-- 轮播图1 -->
+                <div class="carousel-slide active">
+                    <img src="https://picsum.photos/1200/300?data=1" alt="部门一张图大数据展示">
+                    <div class="slide-text">
+                        <div class="slide-title">部门一张图</div>
+                        <div class="slide-desc">整合各部门核心业务数据，实现可视化展示，辅助决策分析</div>
+                    </div>
+                </div>
+                <!-- 轮播图2 -->
+                <div class="carousel-slide">
+                    <img src="https://picsum.photos/1200/300?data=2" alt="城市运行监测大数据展示">
+                    <div class="slide-text">
+                        <div class="slide-title">城市运行监测</div>
+                        <div class="slide-desc">实时监测城市运行关键指标，异常情况及时预警，提升治理能力</div>
+                    </div>
+                </div>
+                <!-- 轮播图3 -->
+                <div class="carousel-slide">
+                    <img src="https://picsum.photos/1200/300?data=3" alt="政务数据中台大数据展示">
+                    <div class="slide-text">
+                        <div class="slide-title">政务数据中台</div>
+                        <div class="slide-desc">汇聚全量政务数据，提供数据共享、分析、挖掘等服务</div>
+                    </div>
+                </div>
+
+                <!-- 轮播指示器 -->
+                <div class="carousel-indicators">
+                    <div class="indicator-dot active" data-index="0"></div>
+                    <div class="indicator-dot" data-index="1"></div>
+                    <div class="indicator-dot" data-index="2"></div>
+                </div>
+
+                <!-- 轮播控制按钮 -->
+                <div class="carousel-controls">
+                    <div class="carousel-control prev-control">
+                        <i class="fa fa-chevron-left"></i>
+                    </div>
+                    <div class="carousel-control next-control">
+                        <i class="fa fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 政策通知 -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fa fa-bell"></i>
+                政策通知
+            </h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fa fa-file-contract"></i></div>
+                        <h3 class="card-title">政策文件</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul class="policy-list">
+                            <li class="policy-item">
+                                <a href="./policy-detail.html?id=1">
+                                    <div class="policy-title">关于进一步推进数字政府建设的实施意见</div>
+                                    <div class="policy-date">2026-01-05</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./policy-detail.html?id=2">
+                                    <div class="policy-title">2026年政务服务优化提升工作方案</div>
+                                    <div class="policy-date">2026-01-01</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./policy-detail.html?id=3">
+                                    <div class="policy-title">智慧城市建设专项资金管理办法</div>
+                                    <div class="policy-date">2025-12-28</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./policy-detail.html?id=4">
+                                    <div class="policy-title">政务数据开放共享管理办法</div>
+                                    <div class="policy-date">2025-12-20</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="./policy-file.html" class="more-link">更多政策 →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fa fa-bullhorn"></i></div>
+                        <h3 class="card-title">通知公告</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul class="policy-list">
+                            <li class="policy-item">
+                                <a href="./notice-detail.html?id=1">
+                                    <div class="policy-title">关于开展2026年度政务系统培训的通知</div>
+                                    <div class="policy-date">2026-01-10</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./notice-detail.html?id=2">
+                                    <div class="policy-title">关于2026年春节放假安排的通知</div>
+                                    <div class="policy-date">2026-01-08</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./notice-detail.html?id=3">
+                                    <div class="policy-title">关于开展政务服务满意度调查的通知</div>
+                                    <div class="policy-date">2026-01-03</div>
+                                </a>
+                            </li>
+                            <li class="policy-item">
+                                <a href="./notice-detail.html?id=4">
+                                    <div class="policy-title">关于政务服务大厅搬迁的公告</div>
+                                    <div class="policy-date">2025-12-25</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="./notice-announce.html" class="more-link">更多通知 →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fa fa-lightbulb"></i></div>
+                        <h3 class="card-title">AI政策解读</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>最新政策：《关于进一步推进数字政府建设的实施意见》</p>
+                        <p style="margin: 10px 0;">AI核心解读：到2027年，全市数字政府建设水平显著提升，政务服务事项全程网办率达到95%以上，数据共享交换体系更加完善。</p>
+                        <p>重点任务：构建一体化政务服务体系、完善数据资源管理体系、提升政务智能化水平。</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="./ai-policy.html" class="btn btn-primary">更多解读</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-col">
+                    <h3>内部导航</h3>
+                    <ul>
+                        <li><a href="./system-manage.html">系统管理</a></li>
+                        <li><a href="./user-manage.html">用户管理</a></li>
+                        <li><a href="./workbench.html">工作台</a></li>
+                        <li><a href="./help-center.html">帮助中心</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>常用工具</h3>
+                    <ul>
+                        <li><a href="./ai-writing.html">AI公文写作</a></li>
+                        <li><a href="./template-library.html">模板库</a></li>
+                        <li><a href="./approval.html">审批中心</a></li>
+                        <li><a href="./data-stat.html">数据统计</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>技术支持</h3>
+                    <ul>
+                        <li><a href="./technical-support.html">技术支持</a></li>
+                        <li><a href="./bug-report.html">问题反馈</a></li>
+                        <li><a href="./system-log.html">系统日志</a></li>
+                        <li><a href="./update-log.html">更新日志</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li>技术支持：0531-66604396</li>
+                        <li>工作时间：9:00-17:00</li>
+                        <li>地址：起步区管委会城市运营指挥中心</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>版权所有 © 政务内部统一办公门户 丨 内部系统 禁止外传 丨 技术支持：政务信息中心</p>
+                <p>最佳浏览效果：1920×1080分辨率 推荐浏览器：Chrome、Firefox、Edge</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 部门标签切换
+        const deptTabs = document.querySelectorAll('.dept-tab');
+        deptTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                deptTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 2px 12px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
+            }
+        });
+
+        // 退出登录功能
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            if (confirm('确定要退出登录吗？')) {
+                window.location.href = './login.html';
+            }
+        });
+
+        // 数字大脑图片轮播功能
+        const carousel = document.getElementById('brainCarousel');
+        const slides = carousel.querySelectorAll('.carousel-slide');
+        const indicators = carousel.querySelectorAll('.indicator-dot');
+        const prevControl = carousel.querySelector('.prev-control');
+        const nextControl = carousel.querySelector('.next-control');
+        let currentIndex = 0;
+        const slideCount = slides.length;
+        let autoPlayInterval;
+
+        function initCarousel() {
+            updateSlideVisibility();
+            startAutoPlay();
+            
+            indicators.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+            });
+
+            prevControl.addEventListener('click', goToPrevSlide);
+            nextControl.addEventListener('click', goToNextSlide);
+
+            carousel.addEventListener('mouseenter', stopAutoPlay);
+            carousel.addEventListener('mouseleave', startAutoPlay);
+        }
+
+        function updateSlideVisibility() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentIndex);
+            });
+
+            indicators.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            if (currentIndex < 0) currentIndex = slideCount - 1;
+            if (currentIndex >= slideCount) currentIndex = 0;
+            updateSlideVisibility();
+        }
+
+        function goToPrevSlide() {
+            goToSlide(currentIndex - 1);
+        }
+
+        function goToNextSlide() {
+            goToSlide(currentIndex + 1);
+        }
+
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(goToNextSlide, 5000);
+        }
+
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+
+        initCarousel();
+    </script>
+</body>
+</html>

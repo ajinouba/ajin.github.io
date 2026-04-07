@@ -376,6 +376,26 @@
             color: #005ea5;
         }
 
+        /* 后台管理入口按钮 */
+        .admin-entry {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .admin-entry:hover {
+            color: #005ea5;
+        }
+
+        .admin-entry i {
+            font-size: 14px;
+        }
+
         .header-nav {
             padding: 0;
         }
@@ -1085,6 +1105,10 @@
                     <button class="search-btn"><i class="fa fa-search"></i></button>
                 </div>
                 <div class="user-area">
+                    <a href="./admin/后台管理.html" class="admin-entry">
+                        <i class="fa fa-cog"></i>
+                        <span>后台管理</span>
+                    </a>
                     <div class="user-info">
                         <div class="user-avatar"><i class="fa fa-user"></i></div>
                         <span>政务管理员</span>
@@ -1096,7 +1120,7 @@
             <nav class="header-nav">
                 <ul class="nav-list">
                     <li class="nav-item active">
-                        <a href="统一办公2.html">首页</a>
+                        <a href="index.html">首页</a>
                     </li>
                     <li class="nav-item">
                         <a href="./ai办公.html">AI办公</a>
@@ -1130,7 +1154,7 @@
 
     <main class="container">
         <!-- 常用系统 -->
-        <!-- <div class="section">
+        <div class="section">
             <h2 class="section-title">
                 <i class="fa fa-server"></i>
                 常用系统
@@ -1173,7 +1197,7 @@
                     </a>
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <!-- AI办公工具专区 -->
         <section class="section">
@@ -2370,7 +2394,7 @@
             initChatbot();
 
             // 未开发功能点击提示（真实页面和外链不拦截）
-            const realPages = ['统一办公2.html', 'ai办公.html', '政务办公.html', '数字大脑.html', '政策通知.html', '办公助手.html'];
+            const realPages = ['统一办公2.html', 'ai办公.html', '政务办公.html', '数字大脑.html', '政策通知.html', '办公助手.html', 'admin/后台管理.html'];
             document.querySelectorAll('a[href]').forEach(function(link) {
                 const href = link.getAttribute('href');
                 if (!href.startsWith('http') && !href.startsWith('#') && !href.startsWith('javascript')) {
